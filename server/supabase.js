@@ -6,25 +6,42 @@ dotenv.config();
 const supabaseUrl = process.env.SUPABASE_URL?.trim();
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('❌ CRITICAL: Missing Supabase credentials! Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in your environment variables.');
-}
+// Initialization Helper
+const initSupabase = () => {
+  if (!supabaseUrl || !supabaseServiceKey) {
+    throw new Error('Supabase credentials missing. Please check Vercel Environment Variables.');
+  }
+  return createClient(supabaseUrl, supabaseServiceKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
+    },
+    global: {
+      fetch: (...args) => fetch(...args).catch(err => {
+        console.error('💥 Neural Fetch Failure:', err.message);
+        throw err;
+      })
+    }
+  });
+};
 
-// Server-side client with service role (bypasses RLS for admin operations)
-export const supabaseServer = (supabaseUrl && supabaseServiceKey) 
-  ? createClient(supabaseUrl, supabaseServiceKey, {
-      auth: {
-        persistSession: false,
-        autoRefreshToken: false,
-      },
-      global: {
-        fetch: (...args) => fetch(...args).catch(err => {
-          console.error('💥 Neural Fetch Failure:', err.message);
-          throw err;
-        })
-      }
-    })
-  : null;
+// Singleton instance
+let _supabaseInstance = null;
+
+export const getSupabase = () => {
+  try {
+    if (!_supabaseInstance) {
+        _supabaseInstance = initSupabase();
+    }
+    return _supabaseInstance;
+  } catch (err) {
+    console.error('Supabase Init Error:', err.message);
+    return null;
+  }
+};
+
+// Export original for compatibility
+export const supabaseServer = getSupabase();
 
 // Create a client scoped to a user's session (respects RLS)
 export const createSupabaseClient = (accessToken) => {

@@ -24,13 +24,12 @@ export const errorHandler = (err, req, res, next) => {
 
   // Default error
   const statusCode = err.statusCode || 500;
-  const message = process.env.NODE_ENV === 'development' 
-    ? err.message 
-    : 'Internal server error';
+  // Temporarily show full error in production to debug Vercel issues
+  const message = err.message || 'Internal server error';
 
   res.status(statusCode).json({
     error: message,
-    ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
   });
 };
 
