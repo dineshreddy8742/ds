@@ -15,8 +15,13 @@ const router = Router();
 const uploadDir = process.env.UPLOAD_DIR || 'uploads';
 
 // Create uploads directory if it doesn't exist
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+// Skip on Vercel/serverless environments
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (err) {
+  console.warn('⚠️ Could not create uploads directory (likely serverless environment):', err.message);
 }
 
 const storage = multer.diskStorage({
