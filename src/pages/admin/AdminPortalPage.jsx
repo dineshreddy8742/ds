@@ -632,7 +632,7 @@ export default function AdminPortalPage() {
                     <div style={{ padding: '0.4rem 0.8rem', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 800 }}>LIVE SYNC</div>
                 </div>
                 <div style={{ height: '300px', width: '100%' }}>
-                  <ResponsiveContainer width="100%" height="100%" minWidth={300}>
+                  <ResponsiveContainer width="100%" height="100%" minWidth={300} minHeight={300}>
                     <AreaChart data={globalStats.trends}>
                       <defs>
                         <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">

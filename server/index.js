@@ -96,13 +96,16 @@ app.get('/api/health', (req, res) => {
 // No need for custom auth endpoints
 
 // API routes (require authentication via middleware)
-app.use('/api/leads', leadsRouter);
-app.use('/api/colleges', collegesRouter);
-app.use('/api/upload', uploadRouter);
-app.use('/api/sync', syncRouter);
-app.use('/api/audit', auditRouter);
-app.use('/api/inquiries', inquiryRouter);
-app.use('/api/messages', messagesRouter);
+const apiPrefixes = ['/api', ''];
+apiPrefixes.forEach(prefix => {
+  app.use(`${prefix}/leads`, leadsRouter);
+  app.use(`${prefix}/colleges`, collegesRouter);
+  app.use(`${prefix}/upload`, uploadRouter);
+  app.use(`${prefix}/sync`, syncRouter);
+  app.use(`${prefix}/audit`, auditRouter);
+  app.use(`${prefix}/inquiries`, inquiryRouter);
+  app.use(`${prefix}/messages`, messagesRouter);
+});
 
 // Database Health & Neural Pulse Pulse
 app.get('/api/status', async (req, res) => {
@@ -139,18 +142,20 @@ app.use(errorHandler);
 // Start Server
 // =====================================================
 
-app.listen(PORT, () => {
-  console.log(`
-╔══════════════════════════════════════════════════════════╗
-║                                                          ║
-║   🚀 DialSmart Backend Server                            ║
-║   📡 Running on: http://localhost:${PORT}                 ║
-║   🌍 Environment: ${process.env.NODE_ENV || 'development'}                           ║
-║   ⚡ Health check: http://localhost:${PORT}/api/health   ║
-║                                                          ║
-╚══════════════════════════════════════════════════════════╝
-  `);
-});
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`
+  ╔══════════════════════════════════════════════════════════╗
+  ║                                                          ║
+  ║   🚀 DialSmart Backend Server                            ║
+  ║   📡 Running on: http://localhost:${PORT}                 ║
+  ║   🌍 Environment: ${process.env.NODE_ENV || 'development'}                           ║
+  ║   ⚡ Health check: http://localhost:${PORT}/api/health   ║
+  ║                                                          ║
+  ╚══════════════════════════════════════════════════════════╝
+    `);
+  });
+}
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
