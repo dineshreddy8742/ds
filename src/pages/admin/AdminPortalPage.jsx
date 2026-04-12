@@ -176,7 +176,7 @@ export default function AdminPortalPage() {
     if (activeTab === 'overview' && colleges.length > 0) {
       fetchDashboardStats(filterCollege);
     }
-  }, [filterCollege]);
+  }, [filterCollege, dateFilter]);
 
   useEffect(() => {
     if (activeTab === 'audit') {

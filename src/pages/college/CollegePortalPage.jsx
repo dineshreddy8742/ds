@@ -101,7 +101,7 @@ export default function CollegePortalPage() {
       setLeads(leadsData.data || []);
       setPagination(prev => ({ ...prev, ...leadsData.pagination }));
       setStats(statsData);
-      
+
       // Get internal college ID for chat
       if (leadsData.data && leadsData.data.length > 0) {
         setCollegeId(leadsData.data[0].college_id);
@@ -433,8 +433,12 @@ export default function CollegePortalPage() {
                   </div>
                   <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8b5cf6' }}>PRECISION</div>
                 </div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.25rem' }}>98%</div>
-                <div style={{ fontSize: '0.875rem', color: "var(--text-muted)", fontWeight: 600 }}>AI Accuracy Rate</div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.25rem' }}>
+                  {stats.by_intent && Object.keys(stats.by_intent).length > 0 
+                    ? Math.round((stats.interested / Math.max(stats.total, 1)) * 100) + '%'
+                    : '0%'}
+                </div>
+                <div style={{ fontSize: '0.875rem', color: "var(--text-muted)", fontWeight: 600 }}>Interest Rate</div>
               </div>
             </div>
 
