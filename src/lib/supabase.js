@@ -4,7 +4,7 @@ const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://jazqtxagwlhbhc
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseAnonKey) {
-  console.warn('⚠️ Missing VITE_SUPABASE_ANON_KEY. Add it to your .env.local file.');
+  console.warn('📡 Signal Lost: VITE_SUPABASE_ANON_KEY is missing. Ensure it is added to Vercel Environment Variables with the VITE_ prefix.');
 }
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey || 'your_anon_key_here', {
