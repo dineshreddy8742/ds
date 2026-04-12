@@ -14,8 +14,16 @@ export const uploadLeads = async (req, res, next) => {
       return res.status(400).json({ error: 'College ID is required' });
     }
 
-    // Read and parse Excel file
-    const workbook = xlsx.readFile(req.file.path);
+    // Read and parse Excel file (from memory buffer or disk)
+    let workbook;
+    if (req.file.buffer) {
+      // Memory storage (Vercel/serverless)
+      workbook = xlsx.read(req.file.buffer, { type: 'buffer' });
+    } else {
+      // Disk storage (local development)
+      workbook = xlsx.readFile(req.file.path);
+    }
+    
     const sheetName = workbook.SheetNames[0];
     const rawData = xlsx.utils.sheet_to_json(workbook.Sheets[sheetName]);
 
