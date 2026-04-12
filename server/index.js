@@ -83,54 +83,54 @@ app.use(generalLimiter);
 // Health Check Endpoint
 // =====================================================
 
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'ok',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development',
-  });
+// =====================================================
+// Path Rewrite & API Versioning
+// =====================================================
+
+// Handle /api prefix universally for Vercel/Local consistency
+app.use((req, res, next) => {
+  if (req.url.startsWith('/api')) {
+    req.url = req.url.substring(4) || '/';
+  }
+  next();
 });
 
 // =====================================================
 // Routes
 // =====================================================
 
-// Auth routes will be handled by Supabase client directly from frontend
-// No need for custom auth endpoints
-
-// API routes (require authentication via middleware)
-const apiPrefixes = ['/api', ''];
-apiPrefixes.forEach(prefix => {
-  app.use(`${prefix}/leads`, leadsRouter);
-  app.use(`${prefix}/colleges`, collegesRouter);
-  app.use(`${prefix}/upload`, uploadRouter);
-  app.use(`${prefix}/sync`, syncRouter);
-  app.use(`${prefix}/audit`, auditRouter);
-  app.use(`${prefix}/inquiries`, inquiryRouter);
-  app.use(`${prefix}/messages`, messagesRouter);
-});
-
-// Database Health & Neural Pulse Pulse
-app.get('/api/status', async (req, res) => {
+// Health checks
+app.get(['/health', '/status'], async (req, res) => {
   const status = {
     server: 'ONLINE',
-    port: PORT,
-    supabase_url: process.env.SUPABASE_URL?.substring(0, 15) + '...',
-    supabase_service_key_set: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
-    timestamp: new Date().toISOString()
+    environment: process.env.NODE_ENV || 'production',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime()
   };
 
   try {
-    const { data, error } = await supabaseServer.from('colleges').select('count', { count: 'exact', head: true });
-    status.supabase_connection = error ? `ERROR: ${error.message}` : '✅ CONFIGURED & REACHABLE';
-    status.node_count = data || 0;
+    if (supabaseServer) {
+        const { error } = await supabaseServer.from('colleges').select('count', { count: 'exact', head: true });
+        status.database = error ? `ERROR: ${error.message}` : 'CONNECTED';
+    } else {
+        status.database = 'NOT_INITIALIZED (Check Env Vars)';
+    }
   } catch (e) {
-    status.supabase_connection = `💥 CRASH: ${e.message}`;
+    status.database = `INIT_FAILED: ${e.message}`;
   }
-
+  
   res.json(status);
 });
+
+// Mounted API routes (Auth handled by Supabase)
+app.use('/leads', leadsRouter);
+app.use('/colleges', collegesRouter);
+app.use('/upload', uploadRouter);
+app.use('/sync', syncRouter);
+app.use('/audit', auditRouter);
+app.use('/inquiries', inquiryRouter);
+app.use('/messages', messagesRouter);
+
 
 // =====================================================
 // Error Handling
