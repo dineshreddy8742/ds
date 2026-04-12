@@ -61,6 +61,11 @@ export default function AdminPortalPage() {
   const { user, signOut, userRole } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   
   const [colleges, setColleges] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -632,24 +637,26 @@ export default function AdminPortalPage() {
                     <div style={{ padding: '0.4rem 0.8rem', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 800 }}>LIVE SYNC</div>
                 </div>
                 <div style={{ height: '300px', width: '100%' }}>
-                  <ResponsiveContainer width="100%" height="100%" minWidth={300} minHeight={300}>
-                    <AreaChart data={globalStats.trends}>
-                      <defs>
-                        <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
-                      <XAxis dataKey="date" stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} />
-                      <YAxis stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} />
-                      <Tooltip 
-                        contentStyle={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                        itemStyle={{ color: '#3b82f6' }}
-                      />
-                      <Area type="monotone" dataKey="leads" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                  {isMounted && (
+                    <ResponsiveContainer width="100%" height="100%" minWidth={300} minHeight={300}>
+                      <AreaChart data={globalStats.trends}>
+                        <defs>
+                          <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                        <XAxis dataKey="date" stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} />
+                        <YAxis stroke="#64748b" fontSize={10} axisLine={false} tickLine={false} />
+                        <Tooltip 
+                          contentStyle={{ background: '#0f172a', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                          itemStyle={{ color: '#3b82f6' }}
+                        />
+                        <Area type="monotone" dataKey="leads" stroke="#3b82f6" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  )}
                 </div>
               </div>
 

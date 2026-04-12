@@ -59,6 +59,11 @@ export default function CollegePortalPage() {
 
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0, totalPages: 1 });
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
@@ -439,17 +444,19 @@ export default function CollegePortalPage() {
                   <Activity size={18} color="var(--accent)" /> Engagement Trends
                 </h4>
                 <div style={{ width: '100%', height: '300px' }}>
-                  <ResponsiveContainer width="100%" height="100%" minHeight={300}>
-                    <AreaChart data={stats.trends}>
-                      <defs>
-                        <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
-                        </linearGradient>
-                      </defs>
-                      <Area type="monotone" dataKey="leads" stroke="#3b82f6" fillOpacity={1} fill="url(#colorLeads)" />
-                    </AreaChart>
-                  </ResponsiveContainer>
+                  {isMounted && (
+                    <ResponsiveContainer width="100%" height="100%" minHeight={300}>
+                      <AreaChart data={stats.trends}>
+                        <defs>
+                          <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
+                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                          </linearGradient>
+                        </defs>
+                        <Area type="monotone" dataKey="leads" stroke="#3b82f6" fillOpacity={1} fill="url(#colorLeads)" />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  )}
                 </div>
               </div>
 
