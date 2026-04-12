@@ -7,8 +7,8 @@ const supabaseUrl = process.env.SUPABASE_URL?.trim();
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY?.trim();
 
 if (!supabaseUrl || !supabaseServiceKey) {
-  console.error('❌ Missing Supabase credentials. Check your .env file.');
-  process.exit(1);
+  console.error('❌ CRITICAL: Missing Supabase credentials! Please set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY in your environment variables.');
+  // Don't exit process in serverless env, just fail gracefully on use
 }
 
 // Server-side client with service role (bypasses RLS for admin operations)
