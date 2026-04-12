@@ -13,6 +13,7 @@ import {
   Settings,
   Shield,
   Search,
+  TrendingUp,
   Users,
   LayoutDashboard,
   CheckCircle2,

@@ -15,6 +15,15 @@ router.get('/', validate(paginationSchema, 'query'), leadController.getLeads);
 // GET /api/leads/stats - Get lead statistics
 router.get('/stats', leadController.getLeadStats);
 
+// GET /api/leads/global/stats - Get global lead statistics (admin only)
+router.get('/global/stats', requireAdmin, leadController.getGlobalStats);
+
+// GET /api/leads/global/search - Global lead search (admin only)
+router.get('/global/search', requireAdmin, validate(paginationSchema, 'query'), leadController.getGlobalLeads);
+
+// GET /api/leads/intelligence - Get global intelligence (admin only)
+router.get('/intelligence', requireAdmin, leadController.getGlobalIntelligence);
+
 // GET /api/leads/:id - Get single lead
 router.get('/:id', leadController.getLead);
 
@@ -32,12 +41,5 @@ router.delete('/:id', requireAdmin, leadController.deleteLead);
 
 // Surgical purge (admin only)
 router.post('/purge', requireAdmin, leadController.purgeLeads);
-
-// Global admin routes
-router.get('/global/stats', requireAdmin, leadController.getGlobalStats);
-router.get('/global/search', requireAdmin, validate(paginationSchema, 'query'), leadController.getGlobalLeads);
-
-// Intelligence route
-router.get('/intelligence', requireAdmin, leadController.getGlobalIntelligence);
 
 export default router;
