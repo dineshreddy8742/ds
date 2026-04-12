@@ -4,7 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
-import { supabaseServer } from './supabase.js';
+import { getSupabase } from './supabase.js';
 import { errorHandler, notFoundHandler } from './middleware/error.js';
 
 // Import routes
@@ -109,8 +109,9 @@ app.get(['/health', '/status'], async (req, res) => {
   };
 
   try {
-    if (supabaseServer) {
-        const { error } = await supabaseServer.from('colleges').select('count', { count: 'exact', head: true });
+    const supabase = getSupabase();
+    if (supabase) {
+        const { error } = await supabase.from('colleges').select('count', { count: 'exact', head: true });
         status.database = error ? `ERROR: ${error.message}` : 'CONNECTED';
     } else {
         status.database = 'NOT_INITIALIZED (Check Env Vars)';
@@ -118,8 +119,20 @@ app.get(['/health', '/status'], async (req, res) => {
   } catch (e) {
     status.database = `INIT_FAILED: ${e.message}`;
   }
-  
+
   res.json(status);
+});
+
+// Debug endpoint to check environment (development only)
+app.get('/debug/env', (req, res) => {
+  if (process.env.NODE_ENV === 'production') {
+    return res.json({ error: 'Not available in production' });
+  }
+  res.json({
+    SUPABASE_URL: !!process.env.SUPABASE_URL,
+    SUPABASE_SERVICE_ROLE_KEY: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+    NODE_ENV: process.env.NODE_ENV
+  });
 });
 
 // Mounted API routes (Auth handled by Supabase)

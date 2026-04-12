@@ -1,9 +1,12 @@
-import { supabaseServer } from '../supabase.js';
+import { getSupabase } from '../supabase.js';
 import { createLead } from './leadService.js';
 
 // Get all colleges
 export const getColleges = async () => {
-  const { data, error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data, error } = await supabase
     .from('colleges')
     .select('id, name, email, is_active, created_at')
     .order('name', { ascending: true });
@@ -14,7 +17,10 @@ export const getColleges = async () => {
 
 // Get college by ID
 export const getCollegeById = async (id) => {
-  const { data, error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data, error } = await supabase
     .from('colleges')
     .select('*')
     .eq('id', id)
@@ -26,8 +32,11 @@ export const getCollegeById = async (id) => {
 
 // Create college with Supabase Auth user
 export const createCollege = async ({ name, email, password }) => {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
   // Create user in Supabase Auth
-  const { data: authData, error: authError } = await supabaseServer.auth.admin.createUser({
+  const { data: authData, error: authError } = await supabase.auth.admin.createUser({
     email,
     password,
     email_confirm: true, // Auto-confirm for admin-created users
@@ -44,7 +53,7 @@ export const createCollege = async ({ name, email, password }) => {
   await new Promise(resolve => setTimeout(resolve, 500));
 
   // Get the created college
-  const { data: college, error: collegeError } = await supabaseServer
+  const { data: college, error: collegeError } = await supabase
     .from('colleges')
     .select('*')
     .eq('email', email)
@@ -60,7 +69,10 @@ export const createCollege = async ({ name, email, password }) => {
 
 // Update college
 export const updateCollege = async (id, updates) => {
-  const { data, error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data, error } = await supabase
     .from('colleges')
     .update(updates)
     .eq('id', id)
@@ -76,8 +88,11 @@ export const updateCollege = async (id, updates) => {
 
 // Delete college (also deletes associated leads via CASCADE)
 export const deleteCollege = async (id) => {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
   // Get college email to find associated user
-  const { data: college } = await supabaseServer
+  const { data: college } = await supabase
     .from('colleges')
     .select('email')
     .eq('id', id)
@@ -86,25 +101,25 @@ export const deleteCollege = async (id) => {
   if (!college) throw new Error('College not found');
 
   // Find the user by email
-  const { data: userList, error: listError } = await supabaseServer.auth.admin.listUsers();
-  
+  const { data: userList, error: listError } = await supabase.auth.admin.listUsers();
+
   if (listError) throw listError;
-  
+
   const user = userList.users?.find(u => u.email === college.email);
-  
+
   if (!user) {
     // If no auth user found, just delete the college record directly
-    const { error: deleteError } = await supabaseServer
+    const { error: deleteError } = await supabase
       .from('colleges')
       .delete()
       .eq('id', id);
-    
+
     if (deleteError) throw deleteError;
     return { success: true };
   }
 
   // Delete the user from auth (this will cascade delete the college via trigger)
-  const { error } = await supabaseServer.auth.admin.deleteUser(user.id);
+  const { error } = await supabase.auth.admin.deleteUser(user.id);
 
   if (error) throw error;
   return { success: true };
@@ -112,8 +127,11 @@ export const deleteCollege = async (id) => {
 
 // Reset college password (admin override)
 export const resetPassword = async (id, newPassword) => {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
   // Get college email
-  const { data: college } = await supabaseServer
+  const { data: college } = await supabase
     .from('colleges')
     .select('email')
     .eq('id', id)
@@ -122,14 +140,14 @@ export const resetPassword = async (id, newPassword) => {
   if (!college) throw new Error('Organization not found');
 
   // Find the user by email
-  const { data: userList, error: listError } = await supabaseServer.auth.admin.listUsers();
+  const { data: userList, error: listError } = await supabase.auth.admin.listUsers();
   if (listError) throw listError;
-  
+
   const user = userList.users?.find(u => u.email === college.email);
   if (!user) throw new Error('Security identity not found for this organization');
 
   // Update password via admin API
-  const { error } = await supabaseServer.auth.admin.updateUserById(user.id, {
+  const { error } = await supabase.auth.admin.updateUserById(user.id, {
     password: newPassword
   });
 
@@ -139,7 +157,10 @@ export const resetPassword = async (id, newPassword) => {
 
 // Get college stats
 export const getCollegeStats = async (collegeId) => {
-  const { data: leadsCount, error: leadsError } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data: leadsCount, error: leadsError } = await supabase
     .from('leads')
     .select('id', { count: 'exact', head: true })
     .eq('college_id', collegeId);

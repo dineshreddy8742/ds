@@ -1,4 +1,4 @@
-import { supabaseServer } from '../supabase.js';
+import { getSupabase } from '../supabase.js';
 import { recordAudit } from './auditService.js';
 import { syncLeadToGoogleSheet } from './googleSyncService.js';
 
@@ -55,7 +55,10 @@ export const getLeads = async ({
   const l = Math.max(1, Math.min(10000, parseInt(limit) || 20));
   const offset = (p - 1) * l;
   
-  let query = supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  let query = supabase
     .from('leads')
     .select('id, student_name, phone, email, intent, duration, conversation, call_start_time, ai_score, status, college_id, created_at', { count: 'exact' });
 
@@ -89,7 +92,10 @@ export const getLeads = async ({
 
 // Get single lead
 export const getLeadById = async (id) => {
-  const { data, error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data, error } = await supabase
     .from('leads')
     .select('id, student_name, phone, email, intent, duration, status, college_id, created_at')
     .eq('id', id)
@@ -101,7 +107,10 @@ export const getLeadById = async (id) => {
 
 // Create lead
 export const createLead = async (leadData) => {
-  const { data, error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data, error } = await supabase
     .from('leads')
     .insert([leadData])
     .select()
@@ -113,15 +122,18 @@ export const createLead = async (leadData) => {
 
 // Update lead
 export const updateLead = async (id, updates, user_id = null) => {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
   // 1. Get current lead data for activity log
-  const { data: oldLead } = await supabaseServer
+  const { data: oldLead } = await supabase
     .from('leads')
     .select('*, colleges(*)')
     .eq('id', id)
     .single();
 
   // 2. Perform database update
-  const { data: newLead, error } = await supabaseServer
+  const { data: newLead, error } = await supabase
     .from('leads')
     .update({ ...updates, updated_at: new Date().toISOString() })
     .eq('id', id)
@@ -131,7 +143,7 @@ export const updateLead = async (id, updates, user_id = null) => {
   if (error) throw error;
 
   // 3. Record Activity Log (Lifecycle Management)
-  await supabaseServer.from('lead_activity_logs').insert([{
+  await supabase.from('lead_activity_logs').insert([{
     lead_id: id,
     user_id,
     action: 'UPDATE_LEAD',
@@ -149,7 +161,10 @@ export const updateLead = async (id, updates, user_id = null) => {
 
 // Delete lead
 export const deleteLead = async (id) => {
-  const { error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { error } = await supabase
     .from('leads')
     .delete()
     .eq('id', id);
@@ -160,7 +175,10 @@ export const deleteLead = async (id) => {
 
 // Surgical Purge: Delete leads by date range and college
 export const purgeLeadsByDate = async ({ college_id, startDate, endDate, user_id }) => {
-  let query = supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  let query = supabase
     .from('leads')
     .delete()
     .gte('created_at', startDate)
@@ -179,16 +197,16 @@ export const purgeLeadsByDate = async ({ college_id, startDate, endDate, user_id
     user_id,
     action: 'PURGE_LEADS',
     table_name: 'leads',
-    details: { 
-      college_id, 
-      startDate, 
-      endDate, 
-      countDeleted: data?.length || 0 
+    details: {
+      college_id,
+      startDate,
+      endDate,
+      countDeleted: data?.length || 0
     }
   });
 
-  return { 
-    success: true, 
+  return {
+    success: true,
     count: data?.length || 0,
     message: `Successfully purged ${data?.length || 0} leads from the selected range.`
   };
@@ -196,7 +214,10 @@ export const purgeLeadsByDate = async ({ college_id, startDate, endDate, user_id
 
 // Bulk create leads (for Excel upload)
 export const bulkCreateLeads = async (leadsArray) => {
-  const { data, error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data, error } = await supabase
     .from('leads')
     .insert(leadsArray)
     .select();
@@ -207,7 +228,7 @@ export const bulkCreateLeads = async (leadsArray) => {
 
 // Get lead statistics with trend data for charts
 export const getLeadStats = async (college_id = null, dateFilter = null) => {
-  let query = supabaseServer.from('leads').select('status, intent, created_at');
+  let query = getSupabase().from('leads').select('status, intent, created_at');
 
   if (college_id) {
     query = query.eq('college_id', college_id);
@@ -283,7 +304,10 @@ export const getLeadStats = async (college_id = null, dateFilter = null) => {
 
 // Get lead activity logs
 export const getLeadActivity = async (lead_id) => {
-    const { data, error } = await supabaseServer
+    const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+    const { data, error } = await supabase
     .from('lead_activity_logs')
     .select('*')
     .eq('lead_id', lead_id)
@@ -298,8 +322,11 @@ export const getLeadActivity = async (lead_id) => {
  */
 export const getGlobalStats = async (dateFilter = null) => {
   console.log('📡 [NEURAL_AGGREGATOR] Initiating Global Platform Pulse with filter:', dateFilter);
-  
-  let query = supabaseServer
+
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  let query = supabase
     .from('leads')
     .select('status, intent, created_at, ai_score');
 
@@ -316,9 +343,9 @@ export const getGlobalStats = async (dateFilter = null) => {
 
   // Heartbeat check: if the main query is empty, let's double check the count
   if (!data || data.length === 0) {
-    const { count } = await supabaseServer.from('leads').select('*', { count: 'exact', head: true });
+    const { count } = await supabase.from('leads').select('*', { count: 'exact', head: true });
     console.warn('⚠️ [NEURAL_AGGREGATOR] Main query silent. Heartbeat Count:', count);
-    
+
     return {
       total: count || 0,
       interested: 0,
@@ -383,17 +410,20 @@ export const getGlobalStats = async (dateFilter = null) => {
  * Get Global Leaderboard and Recent Signals
  */
 export const getGlobalIntelligence = async () => {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
   // Get lead counts grouped by college
-  const { data: leadCounts, error: leadError } = await supabaseServer
+  const { data: leadCounts, error: leadError } = await supabase
     .from('leads')
     .select('college_id, colleges(name), intent');
 
   if (leadError) throw leadError;
 
   const leaderboard = {};
-  
+
   // Pre-populate with all colleges so they show up even with 0 leads
-  const { data: allColleges } = await supabaseServer.from('colleges').select('id, name');
+  const { data: allColleges } = await supabase.from('colleges').select('id, name');
   (allColleges || []).forEach(c => {
     leaderboard[c.id] = { id: c.id, name: c.name, total: 0, high_intent: 0 };
   });
@@ -415,7 +445,7 @@ export const getGlobalIntelligence = async () => {
     .slice(0, 5);
 
   // Get 5 most recent leads platform-wide
-  const { data: recentLeads, error: recentError } = await supabaseServer
+  const { data: recentLeads, error: recentError } = await supabase
     .from('leads')
     .select('id, student_name, intent, created_at, colleges(name)')
     .order('created_at', { ascending: false })
@@ -433,7 +463,10 @@ export const getGlobalIntelligence = async () => {
  * Global Lead Search across all colleges (Admin Only)
  */
 export const searchGlobalLeads = async (query, dateFilter) => {
-  let dbQuery = supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  let dbQuery = supabase
     .from('leads')
     .select('id, student_name, phone, email, intent, ai_score, duration, conversation, call_start_time, status, college_id, created_at, colleges(name)');
 

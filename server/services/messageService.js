@@ -1,7 +1,10 @@
-import { supabaseServer } from '../supabase.js';
+import { getSupabase } from '../supabase.js';
 
 export const getChatHistory = async (college_id) => {
-  const { data, error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data, error } = await supabase
     .from('support_messages')
     .select('*')
     .eq('college_id', college_id)
@@ -12,7 +15,10 @@ export const getChatHistory = async (college_id) => {
 };
 
 export const sendMessage = async (messageData) => {
-  const { data, error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data, error } = await supabase
     .from('support_messages')
     .insert([messageData])
     .select()
@@ -23,7 +29,10 @@ export const sendMessage = async (messageData) => {
 };
 
 export const updateIssueStatus = async (id, status) => {
-  const { data, error } = await supabaseServer
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase client not initialized');
+
+  const { data, error } = await supabase
     .from('support_messages')
     .update({ issue_status: status })
     .eq('id', id)
