@@ -365,76 +365,72 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Scale Matrix Banner */}
-      <section style={{ padding: '80px 5%', background: 'rgba(59,130,246,0.02)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
-        <div className="reveal-on-scroll" style={{ maxWidth: '1400px', margin: '0 auto' }}>
-          <div className="mobile-stack" style={{ display: 'flex', justifyContent: 'space-between', gap: '3rem', textAlign: 'center', marginBottom: '3rem' }}>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--accent)', marginBottom: '0.5rem' }}>10,000+ DAILY CALLS.</h3>
-              <p style={{ fontSize: '0.9rem', fontWeight: 700, opacity: 0.6 }}>INFINITE SCALE. ZERO LIMITS.</p>
+      {/* Cinematic Scale Matrix Hub */}
+      <section style={{ padding: '100px 5%', background: 'rgba(2,6,23,0.2)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '1000px', height: '400px', background: 'radial-gradient(ellipse at center, rgba(59, 130, 246, 0.08) 0%, transparent 70%)', filter: 'blur(100px)', zIndex: 0 }}></div>
+        
+        <div className="reveal-on-scroll" style={{ maxWidth: '1400px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+          <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3rem', marginBottom: '5rem' }}>
+            
+            {/* Pillar 01: Production */}
+            <div className="premium-glass" style={{ padding: '3rem 2rem', borderRadius: '32px', textAlign: 'center', border: '1px solid rgba(59, 130, 246, 0.2)', position: 'relative' }}>
+              <div style={{ position: 'absolute', top: '1rem', left: '2rem', fontSize: '4rem', fontWeight: 900, opacity: 0.03, color: 'white', pointerEvents: 'none' }}>01</div>
+              <div style={{ color: 'var(--accent)', fontWeight: 800, fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '2rem' }}>PRODUCTION SCALE</div>
+              <h3 style={{ fontSize: '2.8rem', fontWeight: 900, lineHeight: 1, letterSpacing: '-0.04em', marginBottom: '1.5rem' }}>
+                10,000+<br />
+                <span style={{ fontSize: '1.8rem', opacity: 0.8 }}>DAILY CALLS.</span>
+              </h3>
+              <p style={{ color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.05em' }}>INFINITE SCALE. ZERO LIMITS.</p>
+              <div style={{ width: '40px', height: '2px', background: 'var(--accent)', margin: '2rem auto 0', boxShadow: '0 0 10px var(--accent)' }}></div>
             </div>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#00ff88', marginBottom: '0.5rem' }}>AI QUALIFIES.</h3>
-              <p style={{ fontSize: '0.9rem', fontWeight: 700, opacity: 0.6 }}>YOU DOWNLOAD. PURE DATA.</p>
+
+            {/* Pillar 02: Intelligence */}
+            <div className="premium-glass" style={{ padding: '3rem 2rem', borderRadius: '32px', textAlign: 'center', border: '1px solid rgba(0, 255, 136, 0.2)', position: 'relative' }}>
+              <div style={{ position: 'absolute', top: '1rem', left: '2rem', fontSize: '4rem', fontWeight: 900, opacity: 0.03, color: 'white', pointerEvents: 'none' }}>02</div>
+              <div style={{ color: '#00ff88', fontWeight: 800, fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '2rem' }}>INTELLIGENCE DATA</div>
+              <h3 style={{ fontSize: '2.8rem', fontWeight: 900, lineHeight: 1, letterSpacing: '-0.04em', marginBottom: '1.5rem' }}>
+                AI QUALIFIES.<br />
+                <span style={{ fontSize: '1.8rem', opacity: 0.8 }}>YOU DOWNLOAD.</span>
+              </h3>
+              <p style={{ color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.05em' }}>PURE DATA. ZERO HUMAN ERROR.</p>
+              <div style={{ width: '40px', height: '2px', background: '#00ff88', margin: '2rem auto 0', boxShadow: '0 0 10px #00ff88' }}></div>
             </div>
-            <div style={{ flex: 1 }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#ff4444', marginBottom: '0.5rem' }}>MARKET DOMINATION</h3>
-              <p style={{ fontSize: '0.9rem', fontWeight: 700, opacity: 0.6 }}>IS NOW AUTONOMOUS.</p>
+
+            {/* Pillar 03: Domination */}
+            <div className="premium-glass" style={{ padding: '3rem 2rem', borderRadius: '32px', textAlign: 'center', border: '1px solid rgba(255, 68, 68, 0.2)', position: 'relative' }}>
+              <div style={{ position: 'absolute', top: '1rem', left: '2rem', fontSize: '4rem', fontWeight: 900, opacity: 0.03, color: 'white', pointerEvents: 'none' }}>03</div>
+              <div style={{ color: '#ff4444', fontWeight: 800, fontSize: '0.8rem', letterSpacing: '0.3em', marginBottom: '2rem' }}>MARKET AUTHORITY</div>
+              <h3 style={{ fontSize: '2.8rem', fontWeight: 900, lineHeight: 1, letterSpacing: '-0.04em', marginBottom: '1.5rem' }}>
+                MARKET<br />
+                <span style={{ fontSize: '1.8rem', opacity: 0.8 }}>DOMINATION.</span>
+              </h3>
+              <p style={{ color: 'var(--text-muted)', fontWeight: 700, fontSize: '0.9rem', letterSpacing: '0.05em' }}>IS NOW AUTONOMOUS.</p>
+              <div style={{ width: '40px', height: '2px', background: '#ff4444', margin: '2rem auto 0', boxShadow: '0 0 10px #ff4444' }}></div>
             </div>
           </div>
 
+          {/* Floating Neural Nodes (Chips) */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
-            {['Advanced Neural Voice', 'Vocal Intent Analysis', 'Multi-Language Sync', 'Instant SSRL'].map(tech => (
-              <div key={tech} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 900, color: 'white', border: '1px solid rgba(255,255,255,0.05)' }}>
+            {['Advanced Neural Voice', 'Vocal Intent Analysis', 'Multi-Language Sync', 'Instant SSRL'].map((tech, i) => (
+              <div key={tech} className="floating-animation" style={{ 
+                padding: '0.75rem 1.5rem', 
+                background: 'rgba(255,255,255,0.03)', 
+                borderRadius: '100px', 
+                fontSize: '0.8rem', 
+                fontWeight: 800, 
+                color: 'white', 
+                border: '1px solid rgba(255,255,255,0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.75rem',
+                animationDelay: `${i * 0.5}s`,
+                boxShadow: '0 5px 15px rgba(0,0,0,0.2)'
+              }}>
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)', boxShadow: '0 0 10px var(--accent)' }}></div>
                 {tech.toUpperCase()}
               </div>
             ))}
           </div>
-        </div>
-      </section>
-      <section id="features" style={{ padding: '120px 5%' }}>
-        <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-          <h2 className="hero-gradient-text" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', fontWeight: 900, marginBottom: '1.5rem' }}>Hands-Free Lead Intelligence</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', fontWeight: 500 }}>We provide the service. Our AI qualifies. You download the final qualified lead data.</p>
-        </div>
-
-        <div className="grid-3">
-          <FeatureCard 
-            icon={<Cpu size={32} />} 
-            title="Neural Voice Engine" 
-            desc="Indistinguishable from human conversation. Adaptive tone, emotion, and pace handling."
-            color="#ff007f"
-          />
-          <FeatureCard 
-            icon={<Smartphone size={32} />} 
-            title="Smart Integration" 
-            desc="Syncs seamlessly with your existing CRM, Google Sheets, and custom API endpoints."
-            color="#7000ff"
-          />
-          <FeatureCard 
-            icon={<MessageCircle size={32} />} 
-            title="Real-time Intent" 
-            desc="Understands not just what people say, but what they mean. High-velocity qualification."
-            color="#3b82f6"
-          />
-          <FeatureCard 
-            icon={<Globe size={32} />} 
-            title="Global Presence" 
-            desc="Instantly provide coverage in 40+ languages with regional accents and cultural context."
-            color="#00ff88"
-          />
-          <FeatureCard 
-            icon={<Users size={32} />} 
-            title="10k+ Daily Calls" 
-            desc="Our infrastructure handles 1,000 to 10,000+ calls effortlessly every single day. Promote your brand at a scale humans can't reach."
-            color="#ffcc00"
-          />
-          <FeatureCard 
-            icon={<Shield size={32} />} 
-            title="Secure & Compliant" 
-            desc="Enterprise encryption and strict compliance handling for sensitive data sectors."
-            color="#ff3333"
-          />
         </div>
       </section>
       {/* Industry Verticals - What we focus mainly */}
