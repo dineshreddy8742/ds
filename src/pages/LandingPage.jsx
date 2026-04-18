@@ -241,9 +241,10 @@ export default function LandingPage() {
           marginBottom: '3.5rem',
           fontWeight: 500
         }}>
-          Dailsmart AI handles the autonomous voice orchestration in **Telugu, Hindi, English, Tamil, Kannada, and Bengali**. 
-          We orchestrate **1,000 to 10,000+ calls daily** so you can scale and promote your business without limits. Zero setup. Instant downloads.
-        </p>        <div className="reveal-on-scroll mobile-stack" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: '500px' }}>
+          Dailsmart AI handles the autonomous voice orchestration in <span style={{ color: 'var(--accent)', fontWeight: 800 }}>Telugu, Hindi, English, Tamil, Kannada, and Bengali</span>. 
+          We orchestrate <span style={{ color: '#00ff88', fontWeight: 800 }}>1,000 to 10,000+ calls daily</span> so you can scale and promote your business without limits. Zero setup. Instant downloads.
+        </p>
+        <div className="reveal-on-scroll mobile-stack" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: '500px' }}>
           <Button onClick={() => navigate('/login')} className="btn-genz" style={{ padding: '1.25rem 3rem', fontSize: '1.1rem', borderRadius: '16px' }}>Access Data Hub</Button>
           <Button onClick={() => {
             const el = document.getElementById('pricing');
