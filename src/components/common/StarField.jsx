@@ -11,7 +11,7 @@ export const StarField = () => {
 
     const stars = [];
     const numStars = 200;
-    const speed = 0.5;
+    const speed = 0.15;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -32,7 +32,7 @@ export const StarField = () => {
 
       update() {
         this.prevZ = this.z;
-        this.z -= speed * 15;
+        this.z -= speed * 5;
         if (this.z <= 0) {
           this.reset();
           this.prevZ = this.z;

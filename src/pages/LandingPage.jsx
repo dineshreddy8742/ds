@@ -147,7 +147,7 @@ export default function LandingPage() {
           <Link to="/login" className="hide-mobile" style={{ textDecoration: 'none' }}>
             <span style={{ color: 'white', fontWeight: 800, fontSize: '0.85rem', marginRight: '1rem', cursor: 'pointer', opacity: 0.8 }}>Log In</span>
           </Link>
-          <Link to="/signup" style={{ textDecoration: 'none' }}>
+          <Link to="/signup" className="hide-mobile" style={{ textDecoration: 'none' }}>
             <button style={{ 
               padding: '0.75rem 1.75rem', 
               background: 'white', 
@@ -230,8 +230,7 @@ export default function LandingPage() {
           marginBottom: '2.5rem',
           filter: 'drop-shadow(0 0 30px rgba(59, 130, 246, 0.3))'
         }}>
-          AI that qualifies your leads,<br />
-          You just download results.
+          AI that qualifies your leads, You just download results.
         </h1>
 
         <p className="reveal-on-scroll" style={{ 
@@ -323,10 +322,10 @@ export default function LandingPage() {
 
       {/* Hyper Growth & Unfair Advantages Section */}
       <section id="growth" style={{ padding: '120px 5%', position: 'relative' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '5rem', alignItems: 'center' }}>
+        <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '5rem', alignItems: 'center' }}>
           <div className="reveal-on-scroll">
             <h2 className="hero-gradient-text" style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 900, marginBottom: '2rem', letterSpacing: '-0.04em' }}>
-              The Unfair<br />Advantage 📈
+              The Unfair Advantage 📈
             </h2>
             <p style={{ fontSize: '1.2rem', color: 'var(--text-muted)', marginBottom: '3rem', fontWeight: 500, lineHeight: 1.6 }}>
               Dailsmart AI doesn't just verify contacts; it engineers growth. Our Intelligence Engine grows smarter with every interaction, identifying patterns that human teams miss.
@@ -754,9 +753,10 @@ export default function LandingPage() {
           .grid-3, .grid-4 { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
           section { padding: 60px 20px !important; }
           .hide-mobile { display: none !important; }
-          .mobile-stack { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; }
-          .logo span { font-size: 1.2rem !important; }
-          .logo div { width: 32px !important; height: 32px !important; }
+          .unfair-advantage-text { text-align: center !important; }
+          .unfair-advantage-text h2 { text-align: center !important; }
+          .unfair-advantage-text p { text-align: center !important; }
+          .mobile-stack { flex-direction: column !important; align-items: center !important; text-align: center !important; gap: 3rem !important; }
         }
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
