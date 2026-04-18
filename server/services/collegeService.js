@@ -5,7 +5,7 @@ import { createLead } from './leadService.js';
 export const getColleges = async () => {
   const { data, error } = await supabaseServer
     .from('colleges')
-    .select('id, name, email, is_active, created_at')
+    .select('id, name, email, is_active, created_at, industry, credits, category, district, state')
     .order('name', { ascending: true });
 
   if (error) throw error;
@@ -25,7 +25,7 @@ export const getCollegeById = async (id) => {
 };
 
 // Create college with Supabase Auth user
-export const createCollege = async ({ name, email, password }) => {
+export const createCollege = async ({ name, email, password, industry, credits, category, district, state }) => {
   // Create user in Supabase Auth
   const { data: authData, error: authError } = await supabaseServer.auth.admin.createUser({
     email,
@@ -34,6 +34,11 @@ export const createCollege = async ({ name, email, password }) => {
     user_metadata: {
       role: 'COLLEGE',
       college_name: name,
+      industry: industry,
+      credits: credits,
+      category: category,
+      district: district,
+      state: state
     },
   });
 
@@ -52,9 +57,22 @@ export const createCollege = async ({ name, email, password }) => {
 
   if (collegeError) throw collegeError;
 
+  // Manually update industry and credits in case the trigger doesn't handle user_metadata
+  await supabaseServer
+    .from('colleges')
+    .update({ industry, credits, category, district, state })
+    .eq('id', college.id);
+    
+  // Refetch to ensure we return the updated record
+  const { data: updatedCollege } = await supabaseServer
+    .from('colleges')
+    .select('*')
+    .eq('id', college.id)
+    .single();
+
   return {
     user: authData.user,
-    college,
+    college: updatedCollege || college,
   };
 };
 

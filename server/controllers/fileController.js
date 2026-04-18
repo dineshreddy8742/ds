@@ -54,25 +54,33 @@ export const uploadLeads = async (req, res, next) => {
       // Score mapping
       const ai_score = parseInt(row['Score'] || row['score'] || row['AI Score'] || row['AI Score'] || row['Lead Score'] || '0', 10);
 
-      // Call Start Time mapping
-      const call_start_time = row['Call Start Time'] || row['call_start_time'] || row['Call Time'] || row['Start Time'] || null;
-
-      // Intent/Interest mapping (keep for backward compatibility)
-      const intent = row['Intent'] || row['intent'] || row['Interest'] || row['Interest Level'] || row['Response'] || 'Pending';
-
-      return {
-        student_name: String(student_name).slice(0, 200),
-        phone: phone.slice(0, 20),
-        email: email.slice(0, 100),
-        intent: String(intent).slice(0, 100),
-        duration: duration.slice(0, 50),
-        conversation: conversation.slice(0, 2000),
-        status: String(status).slice(0, 50),
-        ai_score: isNaN(ai_score) ? 0 : Math.min(100, Math.max(0, ai_score)),
-        call_start_time: call_start_time ? String(call_start_time).slice(0, 50) : null,
-        college_id,
-        created_by: req.user.id,
-      };
+        // Call Start Time mapping
+        const call_start_time = row['Call Start Time'] || row['call_start_time'] || row['Call Time'] || row['Start Time'] || null;
+  
+        // Intent/Interest mapping (keep for backward compatibility)
+        const intent = row['Intent'] || row['intent'] || row['Interest'] || row['Interest Level'] || row['Response'] || 'Pending';
+  
+        // District/Constituency mapping
+        const district = row['District'] || row['district'] || row['Constituency'] || row['Area'] || row['Region'] || null;
+  
+        // Sentiment mapping
+        const sentiment = row['Sentiment'] || row['sentiment'] || row['Mood'] || row['Reaction'] || null;
+  
+        return {
+          student_name: String(student_name).slice(0, 200),
+          phone: phone.slice(0, 20),
+          email: email.slice(0, 100),
+          intent: String(intent).slice(0, 100),
+          duration: duration.slice(0, 50),
+          conversation: conversation.slice(0, 2000),
+          status: String(status).slice(0, 50),
+          ai_score: isNaN(ai_score) ? 0 : Math.min(100, Math.max(0, ai_score)),
+          call_start_time: call_start_time ? String(call_start_time).slice(0, 50) : null,
+          district: district ? String(district).slice(0, 100) : null,
+          sentiment: sentiment ? String(sentiment).slice(0, 50) : null,
+          college_id,
+          created_by: req.user.id,
+        };
     });
 
     // Bulk insert leads

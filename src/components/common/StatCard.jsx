@@ -1,24 +1,44 @@
 import React from 'react';
 
-export const StatCard = ({ title, value, color = '#60a5fa', icon }) => {
+export const StatCard = ({ title, value, color = 'var(--accent)', icon }) => {
   return (
     <div
+      className="glass-card"
       style={{
-        background: '#121214',
-        border: '1px solid #27272a',
-        padding: '1.5rem',
-        borderRadius: '16px',
-        transition: 'transform 0.2s, box-shadow 0.2s',
+        padding: '1.75rem',
         animation: 'slideUp 0.6s ease-out backwards',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '1rem'
       }}
-      className="stat-card"
     >
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1rem' }}>
-        {icon && <span style={{ fontSize: '1.5rem' }}>{icon}</span>}
-        <div style={{ color: '#a1a1aa', fontSize: '0.875rem', fontWeight: 500 }}>{title}</div>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div style={{ 
+          color: 'var(--text-muted)', 
+          fontSize: '0.8125rem', 
+          fontWeight: 800, 
+          textTransform: 'uppercase', 
+          letterSpacing: '0.05em' 
+        }}>
+          {title}
+        </div>
+        {icon && (
+          <div style={{ 
+            color, 
+            opacity: 0.8,
+            padding: '0.5rem',
+            background: `${color}15`,
+            borderRadius: '10px'
+          }}>
+            {icon}
+          </div>
+        )}
       </div>
-      <div style={{ fontSize: '2.5rem', fontWeight: 700, color }}>
+      <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--text-main)', letterSpacing: '-0.02em' }}>
         {value}
+      </div>
+      <div style={{ width: '100%', height: '4px', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', overflow: 'hidden' }}>
+        <div style={{ width: '40%', height: '100%', background: color, borderRadius: '10px', opacity: 0.5 }}></div>
       </div>
     </div>
   );

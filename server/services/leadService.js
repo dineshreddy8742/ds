@@ -57,7 +57,7 @@ export const getLeads = async ({
   
   let query = supabaseServer
     .from('leads')
-    .select('id, student_name, phone, email, intent, duration, conversation, call_start_time, ai_score, status, college_id, created_at', { count: 'exact' });
+    .select('*, colleges(name)', { count: 'exact' });
 
   // Add filters
   if (college_id) query = query.eq('college_id', college_id);
@@ -207,7 +207,7 @@ export const bulkCreateLeads = async (leadsArray) => {
 
 // Get lead statistics with trend data for charts
 export const getLeadStats = async (college_id = null, dateFilter = null) => {
-  let query = supabaseServer.from('leads').select('status, intent, created_at');
+  let query = supabaseServer.from('leads').select('*');
 
   if (college_id) {
     query = query.eq('college_id', college_id);
@@ -220,30 +220,29 @@ export const getLeadStats = async (college_id = null, dateFilter = null) => {
   const { data, error } = await query;
 
   if (error) throw error;
-  if (!data) return { total: 0, interested: 0, notInterested: 0, by_status: {}, by_intent: {}, trends: [] };
+  if (!data) return { total: 0, interested: 0, notInterested: 0, by_status: {}, by_intent: {}, by_district: {}, by_sentiment: { positive: 0, negative: 0, neutral: 0 }, trends: [] };
 
   const stats = {
     total: data.length,
     interested: data.filter(l => {
       const s = String(l?.status || '').toLowerCase();
       const i = String(l?.intent || '').toLowerCase();
-      // Count as interested if status is Interested/Enrolled OR intent shows positive response
       return s === 'interested' || s === 'enrolled' || 
              i.includes('high') || i.includes('interested') || i.includes('yes') || i.includes('positive');
     }).length,
     notInterested: data.filter(l => {
       const s = String(l?.status || '').toLowerCase();
       const i = String(l?.intent || '').toLowerCase();
-      // Count as not interested if status is Not Interested OR intent shows negative response
       return s === 'not interested' || 
              i.includes('low') || i.includes('not interested') || i.includes('negative') || i.includes('disinterested');
     }).length,
     by_status: {},
     by_intent: {},
+    by_district: {},
+    by_sentiment: { positive: 0, negative: 0, neutral: 0 },
     trends: [],
   };
 
-  // Group by date for trends (last 7 days)
   const last7Days = Array.from({ length: 7 }, (_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - i);
@@ -258,15 +257,25 @@ export const getLeadStats = async (college_id = null, dateFilter = null) => {
   data.forEach(lead => {
     if (!lead) return;
 
-    // Count by status
     const status = lead.status || 'Unknown';
     stats.by_status[status] = (stats.by_status[status] || 0) + 1;
 
-    // Count by intent
     const intent = lead.intent || 'Unknown';
     stats.by_intent[intent] = (stats.by_intent[intent] || 0) + 1;
 
-    // Add to trends if within last 7 days
+    if (lead.district) {
+      stats.by_district[lead.district] = (stats.by_district[lead.district] || 0) + 1;
+    }
+
+    const sent = String(lead.sentiment || lead.intent || '').toLowerCase();
+    if (sent.includes('pos') || sent.includes('yes') || sent.includes('agree') || sent.includes('happy')) {
+      stats.by_sentiment.positive++;
+    } else if (sent.includes('neg') || sent.includes('no') || sent.includes('dis') || sent.includes('problem') || sent.includes('sad')) {
+      stats.by_sentiment.negative++;
+    } else {
+      stats.by_sentiment.neutral++;
+    }
+
     const date = lead.created_at ? lead.created_at.split('T')[0] : null;
     if (date && trendMap[date]) {
       trendMap[date].leads++;
@@ -384,28 +393,54 @@ export const getGlobalStats = async (dateFilter = null) => {
  */
 export const getGlobalIntelligence = async () => {
   // Get lead counts grouped by college
-  const { data: leadCounts, error: leadError } = await supabaseServer
-    .from('leads')
-    .select('college_id, colleges(name), intent');
+  let leadCounts = [];
+  try {
+    const { data, error: leadError } = await supabaseServer
+      .from('leads')
+      .select('college_id, intent'); // removed colleges(name) to avoid potential join issues during grouping
 
-  if (leadError) throw leadError;
+    if (leadError) throw leadError;
+    leadCounts = data || [];
+  } catch (err) {
+    console.error('⚠️ [LEAD_SERVICE] Early counting failed, attempting safe fallback:', err.message);
+  }
 
   const leaderboard = {};
+  const globalDistricts = {};
+  const globalSentiment = { positive: 0, negative: 0, neutral: 0 };
   
   // Pre-populate with all colleges so they show up even with 0 leads
-  const { data: allColleges } = await supabaseServer.from('colleges').select('id, name');
+  const { data: allColleges, error: collError } = await supabaseServer.from('colleges').select('id, name');
+  if (collError) {
+    console.error('💥 [LEAD_SERVICE] Node mapping failed:', collError.message);
+  }
+
   (allColleges || []).forEach(c => {
     leaderboard[c.id] = { id: c.id, name: c.name, total: 0, high_intent: 0 };
   });
 
-  if (leadCounts) {
+  if (leadCounts.length > 0) {
     leadCounts.forEach(l => {
       const id = l.college_id;
       if (id && leaderboard[id]) {
         leaderboard[id].total += 1;
-        if (l.intent?.toLowerCase().includes('high')) {
+        const intentStr = String(l.intent || '').toLowerCase();
+        if (intentStr.includes('high') || intentStr.includes('interested')) {
           leaderboard[id].high_intent += 1;
         }
+      }
+
+      // Global District & Sentiment
+      if (l.district) {
+        globalDistricts[l.district] = (globalDistricts[l.district] || 0) + 1;
+      }
+      const sent = String(l.sentiment || l.intent || '').toLowerCase();
+      if (sent.includes('pos') || sent.includes('yes') || sent.includes('happy')) {
+        globalSentiment.positive++;
+      } else if (sent.includes('neg') || sent.includes('no') || sent.includes('dis') || sent.includes('problem')) {
+        globalSentiment.negative++;
+      } else {
+        globalSentiment.neutral++;
       }
     });
   }
@@ -415,17 +450,28 @@ export const getGlobalIntelligence = async () => {
     .slice(0, 5);
 
   // Get 5 most recent leads platform-wide
-  const { data: recentLeads, error: recentError } = await supabaseServer
-    .from('leads')
-    .select('id, student_name, intent, created_at, colleges(name)')
-    .order('created_at', { ascending: false })
-    .limit(5);
+  let recentLeads = [];
+  try {
+    const { data: rd, error: recentError } = await supabaseServer
+      .from('leads')
+      .select('id, student_name, intent, created_at, college_id')
+      .order('created_at', { ascending: false })
+      .limit(5);
 
-  if (recentError) throw recentError;
+    if (recentError) throw recentError;
+    recentLeads = (rd || []).map(rl => ({
+        ...rl,
+        colleges: { name: leaderboard[rl.college_id]?.name || 'Unknown Node' }
+    }));
+  } catch (err) {
+    console.error('💥 [LEAD_SERVICE] Recent signal pulse failed:', err.message);
+  }
 
   return {
     leaderboard: sortedLeaderboard,
-    recentLeads
+    recentLeads,
+    globalDistricts,
+    globalSentiment
   };
 };
 
@@ -435,7 +481,7 @@ export const getGlobalIntelligence = async () => {
 export const searchGlobalLeads = async (query, dateFilter) => {
   let dbQuery = supabaseServer
     .from('leads')
-    .select('id, student_name, phone, email, intent, ai_score, duration, conversation, call_start_time, status, college_id, created_at, colleges(name)');
+    .select('*, colleges(name)');
 
   if (query) {
     dbQuery = dbQuery.or(`student_name.ilike.%${query}%,phone.ilike.%${query}%,email.ilike.%${query}%`);

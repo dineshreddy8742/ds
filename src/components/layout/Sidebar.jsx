@@ -9,35 +9,37 @@ export const Sidebar = ({
   onLogout,
   userBadge = null,
   isOpen = false,
-  onClose 
+  onClose,
+  isCollapsed = false,
+  onToggleCollapse
 }) => {
   const { theme, toggleTheme } = useTheme();
   return (
     <>
-      {/* Mobile overlay */}
-      <div
-        style={{
-          display: isOpen ? 'block' : 'none',
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0,0,0,0.6)',
-          zIndex: 49,
-          backdropFilter: 'blur(4px)'
-        }}
-        onClick={onClose}
-        className="sidebar-overlay"
-      />
+      {/* Mobile overlay - Only show when isOpen is true */}
+      {isOpen && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.6)',
+            zIndex: 49,
+            backdropFilter: 'blur(4px)'
+          }}
+          onClick={onClose}
+        />
+      )}
       
       <aside
         style={{
-          width: '280px',
+          width: isCollapsed ? '80px' : '280px',
           background: 'var(--panel-bg)',
           backdropFilter: 'blur(40px)',
           borderRight: '1px solid var(--border)',
-          padding: '2.5rem 1.25rem',
+          padding: isCollapsed ? '2.5rem 0.75rem' : '2.5rem 1.25rem',
           display: 'flex',
           flexDirection: 'column',
           position: 'fixed',
@@ -45,34 +47,50 @@ export const Sidebar = ({
           left: 0,
           bottom: 0,
           zIndex: 50,
-          boxShadow: '10px 0 30px rgba(0, 0, 0, 0.2)',
-          transform: 'translateX(0)',
-          transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          boxShadow: isCollapsed ? 'none' : '10px 0 30px rgba(0, 0, 0, 0.2)',
+          transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          scrollbarWidth: 'none', // Hide default scrollbar for Firefox
+          msOverflowStyle: 'none', // Hide default scrollbar for IE/Edge
         }}
-        className="sidebar-container"
+        className="sidebar-container scroll-container"
       >
-        {/* Mobile close button */}
+        {/* Toggle / Close Button */}
         <button 
-          onClick={onClose}
-          className="mobile-only"
+          onClick={onToggleCollapse || onClose}
           style={{
             position: 'absolute',
             top: '1rem',
-            right: '1rem',
+            right: isCollapsed ? '50%' : '1rem',
+            transform: isCollapsed ? 'translateX(50%)' : 'none',
             background: 'rgba(255,255,255,0.05)',
-            border: 'none',
+            border: '1px solid var(--border)',
             color: 'var(--text-main)',
-            padding: '0.5rem',
+            width: '32px',
+            height: '32px',
             borderRadius: '10px',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.3s ease',
+            zIndex: 51
           }}
+          title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
-          <X size={20} />
+          {isCollapsed ? <Menu size={16} /> : <X size={16} />}
         </button>
         {/* Decorative Top Glow */}
         <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.5), transparent)' }} />
 
-        <div style={{ marginBottom: '3.5rem', padding: '0 0.5rem' }}>
+        <div style={{ 
+          marginBottom: '3.5rem', 
+          padding: '0 0.5rem',
+          opacity: isCollapsed ? 0 : 1,
+          transition: 'opacity 0.3s ease',
+          whiteSpace: 'nowrap'
+        }}>
           {title}
         </div>
 
@@ -107,20 +125,22 @@ export const Sidebar = ({
                 <span style={{ 
                   color: isActive ? '#3b82f6' : 'inherit',
                   filter: isActive ? 'drop-shadow(0 0 8px rgba(59, 130, 246, 0.6))' : 'none',
-                  transition: 'all 0.3s ease'
+                  transition: 'all 0.3s ease',
+                  flexShrink: 0
                 }}>
                   {item.icon}
                 </span>
-                <span style={{ fontSize: '0.9375rem', letterSpacing: '0.01em' }}>{item.label}</span>
-                {isActive && (
-                  <div style={{ marginLeft: 'auto', width: '4px', height: '4px', borderRadius: '50%', background: '#3b82f6', boxShadow: '0 0 10px #3b82f6' }} />
+                {!isCollapsed && (
+                  <span style={{ fontSize: '0.9375rem', letterSpacing: '0.01em', whiteSpace: 'nowrap' }}>
+                    {item.label}
+                  </span>
                 )}
               </div>
             );
           })}
         </nav>
 
-        {userBadge && (
+        {!isCollapsed && userBadge && (
           <div style={{
             marginTop: 'auto',
             padding: '1.25rem',
@@ -129,15 +149,13 @@ export const Sidebar = ({
             border: '1px solid rgba(59, 130, 246, 0.1)',
             marginBottom: '1rem',
             position: 'relative',
-            overflow: 'hidden'
           }}>
-            <div style={{ position: 'absolute', top: 0, left: 0, width: '2px', height: '100%', background: '#3b82f6' }} />
-            <span style={{ fontSize: '0.6875rem', color: '#93c5fd', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.12em', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-               <Zap size={10} fill="#93c5fd" /> {userBadge.label}
-            </span>
-            <strong style={{ fontSize: '0.8125rem', display: 'block', color: 'var(--text-main)', marginTop: '0.4rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-              {userBadge.value}
+            <strong style={{ fontSize: '0.8125rem', display: 'block', color: 'var(--text-main)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {userBadge.label}
             </strong>
+             <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+              {userBadge.value}
+            </span>
           </div>
         )}
 
@@ -145,51 +163,41 @@ export const Sidebar = ({
           <button
             onClick={toggleTheme}
             style={{
-              padding: '1rem 1.25rem',
+              padding: '1rem',
               borderRadius: '16px',
               color: 'var(--text-main)',
-              fontWeight: 800,
               cursor: 'pointer',
-              transition: 'all 0.3s ease',
               display: 'flex',
               alignItems: 'center',
-              gap: '1rem',
+              justifyContent: isCollapsed ? 'center' : 'flex-start',
+              gap: isCollapsed ? '0' : '1rem',
               background: 'var(--glass)',
               border: '1px solid var(--border)',
-              fontSize: '0.9375rem',
-              width: '100%',
-              textAlign: 'left'
+              width: '100%'
             }}
           >
-            <div style={{ padding: '0.4rem', background: 'var(--accent-glow)', borderRadius: '8px' }}>
-              {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-            </div> 
-            <span>{theme === 'dark' ? 'Stellar Light' : 'Void Dark'}</span>
+            {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
+            {!isCollapsed && <span style={{ whiteSpace: 'nowrap' }}>Theme Toggle</span>}
           </button>
 
           <button
             onClick={onLogout}
             style={{
-              padding: '1rem 1.25rem',
+              padding: '1rem',
               borderRadius: '16px',
               color: 'var(--danger)',
-              fontWeight: 800,
               cursor: 'pointer',
-              transition: 'all 0.3s ease',
               display: 'flex',
               alignItems: 'center',
-              gap: '1rem',
+              justifyContent: isCollapsed ? 'center' : 'flex-start',
+              gap: isCollapsed ? '0' : '1rem',
               background: 'rgba(239, 68, 68, 0.03)',
               border: '1px solid rgba(239, 68, 68, 0.1)',
-              fontSize: '0.9375rem',
-              width: '100%',
-              textAlign: 'left'
+              width: '100%'
             }}
           >
-            <div style={{ padding: '0.4rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '8px' }}>
-              <LogOut size={16} />
-            </div> 
-            <span>Logout Session</span>
+            <LogOut size={16} />
+            {!isCollapsed && <span>Logout</span>}
           </button>
         </div>
       </aside>
@@ -209,13 +217,25 @@ export const Sidebar = ({
           box-shadow: 0 0 20px rgba(239, 68, 68, 0.1);
         }
         .mobile-only { display: none; }
+        .sidebar-container::-webkit-scrollbar {
+          width: 4px;
+        }
+        .sidebar-container::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .sidebar-container::-webkit-scrollbar-thumb {
+          background: rgba(59, 130, 246, 0.2);
+          border-radius: 10px;
+        }
+        .sidebar-container::-webkit-scrollbar-thumb:hover {
+          background: rgba(59, 130, 246, 0.4);
+        }
         @media (max-width: 1024px) {
-          .mobile-only { display: block; }
           .sidebar-container { 
+            width: 280px !important;
             transform: ${isOpen ? 'translateX(0)' : 'translateX(-100%)'} !important;
             box-shadow: ${isOpen ? '20px 0 50px rgba(0,0,0,0.5)' : 'none'} !important;
           }
-          .sidebar-overlay { display: block !important; }
         }
       `}} />
     </>

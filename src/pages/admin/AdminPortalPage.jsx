@@ -48,7 +48,8 @@ import {
   ChevronRight,
   ChevronLeft,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  BrainCircuit
 } from 'lucide-react';
 import { 
   BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
@@ -61,6 +62,7 @@ export default function AdminPortalPage() {
   const { user, signOut, userRole } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -72,8 +74,17 @@ export default function AdminPortalPage() {
   const [activeTab, setActiveTab] = useState('overview');
   const [auditLogs, setAuditLogs] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [newCollege, setNewCollege] = useState({ name: '', email: '', password: '' });
+  const [newCollege, setNewCollege] = useState({ 
+    name: '', 
+    email: '', 
+    password: '', 
+    industry: 'Education', 
+    category: 'B.Tech College',
+    district: '',
+    state: 'Andhra Pradesh'
+  });
   const [filterCollege, setFilterCollege] = useState('all');
+  const [industryFilter, setIndustryFilter] = useState('All');
   const [filterLoading, setFilterLoading] = useState(false);
   const [globalStats, setGlobalStats] = useState({ total: 0, by_status: {}, by_intent: {}, trends: [] });
   const [inquiries, setInquiries] = useState([]);
@@ -98,7 +109,12 @@ export default function AdminPortalPage() {
   const [selectedChatCollege, setSelectedChatCollege] = useState(null);
   const [chatLoading, setChatLoading] = useState(false);
   const [isCalling, setIsCalling] = useState(false);
-  const [intel, setIntel] = useState({ leaderboard: [], recentLeads: [] });
+  const [intel, setIntel] = useState({ 
+    leaderboard: [], 
+    recentLeads: [], 
+    globalDistricts: {}, 
+    globalSentiment: { positive: 0, negative: 0, neutral: 0 } 
+  });
   const [intelLoading, setIntelLoading] = useState(false);
   const [dateFilter, setDateFilter] = useState('');
 
@@ -166,7 +182,8 @@ export default function AdminPortalPage() {
       const data = await leadsAPI.getGlobalIntelligence();
       setIntel(data);
     } catch (error) {
-      console.error('Intel failure');
+      console.error('💥 [NEURAL_DIAGNOSTIC] Neural Ingress Failure:', error.message);
+      toast.error('Intelligence sync interrupted: ' + error.message, { id: 'intel-fail' });
     } finally {
       setIntelLoading(false);
     }
@@ -271,13 +288,41 @@ export default function AdminPortalPage() {
     try {
       await collegesAPI.create(newCollege);
       toast.success('Organization created successfully!');
-      setNewCollege({ name: '', email: '', password: '' });
+      setNewCollege({ 
+        name: '', 
+        email: '', 
+        password: '', 
+        industry: 'Education', 
+        category: 'B.Tech College',
+        district: '',
+        state: 'Andhra Pradesh'
+      });
       setShowModal(false);
       fetchInitialData();
     } catch (error) {
       toast.error(error.message || 'Failed to create organization');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleUpdateIndustry = async (collegeId, industry) => {
+    try {
+      await collegesAPI.update(collegeId, { industry });
+      toast.success('Industry recalibrated successfully');
+      fetchInitialData();
+    } catch (error) {
+      toast.error('Recalibration failed');
+    }
+  };
+
+  const handleUpdateField = async (collegeId, field, value) => {
+    try {
+      await collegesAPI.update(collegeId, { [field]: value });
+      toast.success(`${field.charAt(0).toUpperCase() + field.slice(1)} updated`);
+      fetchInitialData();
+    } catch (error) {
+      toast.error('Update failed');
     }
   };
 
@@ -438,6 +483,7 @@ export default function AdminPortalPage() {
 
   const navItems = [
     { id: 'overview', label: 'Command Center', icon: <LayoutDashboard size={20} /> },
+    { id: 'civic', label: 'Civic Pulse', icon: <Globe size={20} /> },
     { id: 'upload', label: 'Ingestion Engine', icon: <UploadCloud size={20} /> },
     { id: 'colleges', label: 'Global Network', icon: <Building2 size={20} /> },
     { id: 'maintenance', label: 'Data Maintenance', icon: <History size={20} /> },
@@ -475,8 +521,8 @@ export default function AdminPortalPage() {
         backdropFilter: 'blur(10px)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 900 }}>
-          <Shield size={20} color="var(--accent)" />
-          <span>DialSmart<span style={{ color: 'var(--accent)' }}>.ai</span></span>
+          <Bot size={20} color="var(--accent)" />
+          <span>Dailsmart <span style={{ color: 'var(--accent)' }}>AI</span></span>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(true)}
@@ -487,11 +533,11 @@ export default function AdminPortalPage() {
       </header>
 
       <Sidebar
-        title={<div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 900, fontSize: '1.25rem' }}>
+        title={<div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontWeight: 900, fontSize: '1.25rem' }}>
           <div style={{ padding: '0.4rem', background: 'linear-gradient(135deg, var(--accent), #6366f1)', borderRadius: '8px' }}>
-            <Shield size={20} color="white" />
+            <Bot size={20} color="white" />
           </div>
-          DialSmart<span style={{ color: 'var(--accent)' }}>.ai</span>
+          Dailsmart <span style={{ color: 'var(--accent)' }}>AI</span>
         </div>}
         navItems={navItems}
         activeItem={activeTab}
@@ -503,22 +549,24 @@ export default function AdminPortalPage() {
         userBadge={{ label: 'SYSTEM ADMIN', value: user?.email }}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
 
-      <main style={{ flex: 1, padding: '2.5rem', overflowY: 'auto', zIndex: 1, marginTop: 'max(0px, 60px)' }} className="dashboard-main">
-        <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.5rem' }}>
+      <main className="dashboard-main" style={{ flex: 1, padding: '2.5rem', overflowY: 'auto', marginTop: 'max(0px, 60px)' }}>
+        <header className="stellar-header">
           <div>
-            <h1 className="shimmer-text" style={{ fontSize: 'clamp(1.75rem, 5vw, 2.5rem)', fontWeight: 900, margin: '0 0 0.5rem', letterSpacing: '-0.04em' }}>
+            <h1 className="shimmer-text" style={{ fontWeight: 900, margin: '0 0 0.5rem', letterSpacing: '-0.04em' }}>
               Admin Command Center
             </h1>
-            <p style={{ color: 'var(--text-muted)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-              <Zap size={16} color="var(--accent)" /> Global monitoring and neural network orchestration
+            <p style={{ color: 'var(--text-muted)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
+              <Zap size={16} color="var(--accent)" /> Global monitoring and neural orchestration
             </p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <span style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Temporal Node</span>
-              <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(255,255,255,0.03)', padding: '0.25rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)' }}>
+              <div style={{ display: 'flex', gap: '0.25rem', background: 'rgba(255,255,255,0.03)', padding: '0.25rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.08)', flexWrap: 'wrap' }}>
                   {[
                     { id: '', label: 'ALL' },
                     { id: 'today', label: 'TODAY' },
@@ -530,38 +578,52 @@ export default function AdminPortalPage() {
                       onClick={() => setDateFilter(f.id)}
                       style={{
                         padding: '0.4rem 0.6rem',
-                        borderRadius: '8px',
                         fontSize: '0.65rem',
-                        fontWeight: 900,
+                        fontWeight: 800,
+                        borderRadius: '8px',
                         background: dateFilter === f.id ? 'var(--accent)' : 'transparent',
                         color: dateFilter === f.id ? 'white' : 'var(--text-muted)',
                         border: 'none',
                         cursor: 'pointer',
-                        transition: 'all 0.2s'
+                        transition: 'all 0.3s'
                       }}
                     >
                       {f.label}
                     </button>
                   ))}
-                  <input 
-                    type="date"
-                    value={/^\d{4}-\d{2}-\d{2}$/.test(dateFilter) ? dateFilter : ''}
-                    onChange={(e) => setDateFilter(e.target.value)}
-                    style={{
-                      background: 'transparent',
-                      border: 'none',
-                      color: 'var(--text-main)',
-                      fontSize: '0.65rem',
-                      fontWeight: 800,
-                      outline: 'none',
-                      padding: '0 0.5rem',
-                      width: '100px'
-                    }}
-                  />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <button 
+                      className="show-mobile"
+                      onClick={() => setIsSidebarOpen(true)}
+                      style={{ 
+                        background: 'var(--panel-bg)',
+                        border: '1px solid var(--border)',
+                        color: 'var(--text-main)',
+                        padding: '0.5rem',
+                        borderRadius: '10px'
+                      }}
+                    >
+                      <Menu size={20} />
+                    </button>
+                    <input 
+                      type="date"
+                      value={/^\d{4}-\d{2}-\d{2}$/.test(dateFilter) ? dateFilter : ''}
+                      onChange={(e) => setDateFilter(e.target.value)}
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--text-main)',
+                        fontSize: '0.65rem',
+                        fontWeight: 700,
+                        outline: 'none',
+                        padding: '0 0.5rem'
+                      }}
+                    />
+                  </div>
                 </div>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               <span style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Neural Focus</span>
               <select
                 value={filterCollege}
@@ -586,8 +648,8 @@ export default function AdminPortalPage() {
               </select>
             </div>
 
-            <div className="premium-glass" style={{ padding: '0.75rem 1.25rem', borderRadius: '14px', border: '1px solid var(--glass-border)', fontWeight: 700, fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.5rem', alignSelf: 'flex-end' }}>
-              <Activity size={16} color={filterLoading ? 'var(--text-muted)' : 'var(--accent)'} className={filterLoading ? 'animate-spin' : ''} /> {filterLoading ? 'Syncing...' : 'Optimal'}
+            <div className="premium-glass" style={{ padding: '0.5rem 1rem', borderRadius: '12px', border: '1px solid var(--glass-border)', fontWeight: 700, fontSize: '0.8125rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <Activity size={14} color={filterLoading ? 'var(--text-muted)' : 'var(--accent)'} className={filterLoading ? 'animate-spin' : ''} /> {filterLoading ? 'Syncing...' : 'Optimal'}
             </div>
           </div>
         </header>
@@ -595,7 +657,7 @@ export default function AdminPortalPage() {
         {activeTab === 'overview' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             {/* KPI Cards */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
+            <div className="responsive-card-grid">
               <div className="premium-glass" style={{ padding: '2rem', borderRadius: '24px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
                 <div style={statLabelStyle}>{filterCollege === 'all' ? 'Combined Enterprise Leads' : 'Total Node Leads'}</div>
                 <div style={statValueStyle}>{globalStats.total || 0}</div>
@@ -636,10 +698,10 @@ export default function AdminPortalPage() {
                     <h3 style={{ margin: 0, fontWeight: 800, fontSize: '1rem', color: '#94a3b8' }}>Network Ingress Trends</h3>
                     <div style={{ padding: '0.4rem 0.8rem', background: 'rgba(59, 130, 246, 0.1)', color: '#3b82f6', borderRadius: '8px', fontSize: '0.7rem', fontWeight: 800 }}>LIVE SYNC</div>
                 </div>
-                <div style={{ height: '300px', width: '100%' }}>
+                <div style={{ height: '350px', width: '100%', minHeight: '300px' }}>
                   {isMounted && (
-                    <ResponsiveContainer width="100%" height="100%" minWidth={300} minHeight={300}>
-                      <AreaChart data={globalStats.trends}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={globalStats.trends} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                         <defs>
                           <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
                             <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
@@ -687,7 +749,7 @@ export default function AdminPortalPage() {
             </div>
 
             {/* Bottom Grid: AI Perf & Live Stream */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr 2fr))', gap: '1.5rem' }} className="responsive-grid-1-2">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem' }}>
                 <div className="premium-glass" style={{ padding: '2rem', borderRadius: '24px' }}>
                     <h3 style={{ margin: '0 0 1.5rem', fontWeight: 800, fontSize: '1rem', color: '#94a3b8' }}>AI Performance</h3>
                     <div style={{ textAlign: 'center', padding: '1rem 0' }}>
@@ -703,7 +765,7 @@ export default function AdminPortalPage() {
 
                 <div className="premium-glass" style={{ padding: '2rem', borderRadius: '24px' }}>
                     <h3 style={{ margin: '0 0 1.5rem', fontWeight: 800, fontSize: '1rem', color: '#94a3b8' }}>Live Neural Ingress Stream</h3>
-                    <div style={{ overflowX: 'auto' }}>
+                    <div className="scroll-container">
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                             <thead>
                                 <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', textAlign: 'left' }}>
@@ -877,9 +939,33 @@ export default function AdminPortalPage() {
               </Button>
             </div>
 
+            <div style={{ display: 'flex', gap: '0.5rem', background: 'rgba(255,255,255,0.03)', padding: '0.4rem', borderRadius: '16px', border: '1px solid var(--border)', width: 'fit-content' }}>
+                {['All', 'Education', 'Political / Government', 'Real Estate'].map(type => (
+                    <button
+                        key={type}
+                        onClick={() => setIndustryFilter(type)}
+                        style={{
+                            padding: '0.6rem 1.2rem',
+                            borderRadius: '12px',
+                            background: industryFilter === type ? 'var(--accent)' : 'transparent',
+                            color: industryFilter === type ? 'white' : 'var(--text-muted)',
+                            border: 'none',
+                            fontSize: '0.75rem',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease'
+                        }}
+                    >
+                        {type === 'Political / Government' ? 'POLITICIANS' : type.toUpperCase()}
+                    </button>
+                ))}
+            </div>
+
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '1.5rem' }}>
-              {colleges.map((college) => (
-                <div key={college.id} className="premium-glass" style={{ padding: '2rem', borderRadius: '24px', position: 'relative' }}>
+              {colleges
+                .filter(c => industryFilter === 'All' || c.industry === industryFilter)
+                .map((college) => (
+                <div key={college.id} className="premium-glass" style={{ padding: '2rem', borderRadius: '24px', position: 'relative', border: '1px solid rgba(255,255,255,0.05)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
                     <div style={{ padding: '0.75rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px' }}>
                       <Globe size={24} color="#3b82f6" />
@@ -889,6 +975,48 @@ export default function AdminPortalPage() {
                       <p style={{ margin: 0, fontSize: '0.8125rem', color: '#64748b' }}>{college.email}</p>
                     </div>
                   </div>
+                  
+                  <div style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <select
+                        value={college.industry || 'Education'}
+                        onChange={(e) => handleUpdateIndustry(college.id, e.target.value)}
+                        style={{
+                            fontSize: '0.65rem', 
+                            fontWeight: 900, 
+                            color: 'var(--accent)', 
+                            background: 'rgba(59, 130, 246, 0.1)', 
+                            padding: '0.3rem 0.6rem', 
+                            borderRadius: '6px',
+                            border: 'none',
+                            outline: 'none',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.05em',
+                            cursor: 'pointer'
+                        }}
+                    >
+                        <option value="Education">Education</option>
+                        <option value="Political / Government">Political / Government</option>
+                        <option value="Real Estate">Real Estate</option>
+                    </select>
+
+                    <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                        {college.district}, {college.state}
+                    </span>
+                  </div>
+
+                  <div style={{ marginBottom: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <span style={{ 
+                        fontSize: '0.65rem', 
+                        fontWeight: 900, 
+                        color: 'var(--success)', 
+                        background: 'rgba(16, 185, 129, 0.1)', 
+                        padding: '0.3rem 0.6rem', 
+                        borderRadius: '6px'
+                    }}>
+                        {college.category || 'N/A'}
+                    </span>
+                  </div>
+
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '12px' }}>
                     <div style={{ fontSize: '0.75rem', color: '#10b981', fontWeight: 800 }}>NODE ACTIVE</div>
                     <Button variant="secondary" onClick={() => navigate(`/admin/colleges/${college.id}`)}>
@@ -901,6 +1029,102 @@ export default function AdminPortalPage() {
           </div>
         )}
 
+        {activeTab === 'civic' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+              <h1 className="hero-gradient-text" style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '0.5rem' }}>Civic Intelligence Command</h1>
+              <p className="text-muted" style={{ fontSize: '1.1rem', fontWeight: 600 }}>Global regional analytics & constituent sentiment pulse.</p>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '2rem' }}>
+              {/* Regional Support Distribution */}
+              <div className="premium-glass" style={{ padding: '2.5rem', borderRadius: '32px' }}>
+                <h4 style={{ margin: '0 0 2rem', fontSize: '1.25rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <Globe size={24} color="var(--accent)" /> Global Regional Support
+                </h4>
+                <div style={{ width: '100%', height: '400px' }}>
+                  {isMounted && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={Object.entries(intel.globalDistricts || {}).map(([name, value]) => ({ name, value }))}>
+                        <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} fontWeight={700} />
+                        <YAxis stroke="var(--text-muted)" fontSize={12} fontWeight={700} />
+                        <Tooltip 
+                          contentStyle={{ background: 'var(--panel-bg)', border: '1px solid var(--border)', borderRadius: '16px' }}
+                        />
+                        <Bar dataKey="value" fill="url(#civicGradient)" radius={[6, 6, 0, 0]} />
+                        <defs>
+                          <linearGradient id="civicGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="var(--accent)" />
+                            <stop offset="100%" stopColor="var(--accent-secondary)" />
+                          </linearGradient>
+                        </defs>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+              </div>
+
+              {/* Citizen Mood Spectrum */}
+              <div className="premium-glass" style={{ padding: '2.5rem', borderRadius: '32px' }}>
+                <h4 style={{ margin: '0 0 2rem', fontSize: '1.25rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <BrainCircuit size={24} color="#8b5cf6" /> Network Sentiment Pulse
+                </h4>
+                <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center' }}>
+                  {isMounted && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'Positive Response', value: intel.globalSentiment?.positive || 0 },
+                            { name: 'Neutral / Thinking', value: intel.globalSentiment?.neutral || 1 },
+                            { name: 'Grievances / Negative', value: intel.globalSentiment?.negative || 0 }
+                          ]}
+                          innerRadius={80}
+                          outerRadius={120}
+                          paddingAngle={8}
+                          dataKey="value"
+                        >
+                          {[0,1,2].map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={['#10b981', '#6366f1', '#ef4444'][index]} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ background: 'var(--panel-bg)', borderRadius: '16px', border: '1px solid var(--border)' }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '2rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px rgba(16, 185, 129, 0.4)' }}></div>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>Positive Support</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#6366f1', boxShadow: '0 0 10px rgba(99, 102, 241, 0.4)' }}></div>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>Undecided / Neutral</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#ef4444', boxShadow: '0 0 10px rgba(239, 68, 68, 0.4)' }}></div>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>Issues Reported</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="premium-glass" style={{ padding: '2.5rem', borderRadius: '32px' }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, marginBottom: '1.5rem' }}>Top Constituencies by Lead Density</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1.5rem' }}>
+                {Object.entries(intel.globalDistricts || {}).sort((a,b) => b[1] - a[1]).slice(0, 8).map(([name, count]) => (
+                  <div key={name} style={{ padding: '1.5rem', background: 'rgba(255,255,255,0.03)', borderRadius: '20px', border: '1px solid var(--border)' }}>
+                     <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent)', textTransform: 'uppercase', marginBottom: '0.5rem' }}>{name}</div>
+                     <div style={{ fontSize: '1.75rem', fontWeight: 900 }}>{count}</div>
+                     <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>Total Signals Captured</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+  
         {activeTab === 'search' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
             <div className="premium-glass" style={{ padding: '2rem', borderRadius: '24px', display: 'flex', gap: '1rem', alignItems: 'center' }}>
@@ -1310,6 +1534,74 @@ export default function AdminPortalPage() {
             required
           />
 
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
+            <div>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Industry Sector</label>
+              <select
+                value={newCollege.industry}
+                onChange={(e) => setNewCollege({ ...newCollege, industry: e.target.value })}
+                className="premium-glass"
+                style={{ width: '100%', padding: '1rem', borderRadius: '16px', border: '1px solid var(--border)', background: 'var(--panel-bg)', color: 'white', outline: 'none' }}
+              >
+                <option value="Education">Education</option>
+                <option value="Political / Government">Political / Government</option>
+                <option value="Real Estate">Real Estate</option>
+              </select>
+            </div>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+            <div>
+              <label style={{ fontSize: '0.8125rem', fontWeight: 800, color: '#64748b', textTransform: 'uppercase', marginBottom: '0.5rem', display: 'block' }}>Category / Sub-type</label>
+              <select
+                value={newCollege.category}
+                onChange={(e) => setNewCollege({ ...newCollege, category: e.target.value })}
+                className="premium-glass"
+                style={{ width: '100%', padding: '1rem', borderRadius: '16px', border: '1px solid var(--border)', background: 'var(--panel-bg)', color: 'white', outline: 'none' }}
+              >
+                {newCollege.industry === 'Education' && (
+                  <>
+                    <option value="B.Tech College">B.Tech College</option>
+                    <option value="Inter College">Inter College</option>
+                    <option value="School">School</option>
+                    <option value="Coaching Center">Coaching Center</option>
+                  </>
+                )}
+                {newCollege.industry === 'Political / Government' && (
+                  <>
+                    <option value="MP Constituency">MP Constituency</option>
+                    <option value="MLA Constituency">MLA Constituency</option>
+                    <option value="District Party Office">District Party Office</option>
+                    <option value="Civic Body">Civic Body</option>
+                  </>
+                )}
+                {newCollege.industry === 'Real Estate' && (
+                  <>
+                    <option value="Residential Projects">Residential Projects</option>
+                    <option value="Commercial Projects">Commercial Projects</option>
+                    <option value="Open Plots">Open Plots</option>
+                    <option value="Luxury Villas">Luxury Villas</option>
+                  </>
+                )}
+              </select>
+            </div>
+            <Input
+              label="District"
+              value={newCollege.district}
+              onChange={(e) => setNewCollege({ ...newCollege, district: e.target.value })}
+              placeholder="e.g. Chittoor"
+              required
+            />
+          </div>
+
+          <Input
+            label="State"
+            value={newCollege.state}
+            onChange={(e) => setNewCollege({ ...newCollege, state: e.target.value })}
+            placeholder="e.g. Andhra Pradesh"
+            required
+          />
+
           <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
             <Button type="submit" loading={loading} fullWidth style={{ borderRadius: '14px', padding: '1rem' }}>
               Mobilize Organization
@@ -1341,7 +1633,7 @@ export default function AdminPortalPage() {
         <div style={{ width: '100%', height: '75vh', borderRadius: '32px', overflow: 'hidden', background: '#000', border: '1px solid var(--border)' }}>
             {isCalling && (
               <iframe
-                src={`https://meet.jit.si/dialsmart-support-${selectedChatCollege?.id}`}
+                src={`https://meet.jit.si/dailsmart-support-${selectedChatCollege?.id}`}
                 allow="camera; microphone; fullscreen; display-capture; autoplay"
                 style={{ width: '100%', height: '100%', border: 'none' }}
               ></iframe>
@@ -1361,7 +1653,10 @@ export default function AdminPortalPage() {
         .hero-gradient-text { background: linear-gradient(135deg, #fff 0%, #94a3b8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
         @media (min-width: 1025px) {
-          .dashboard-main { margin-left: 280px; }
+          .dashboard-main { 
+            margin-left: ${isSidebarCollapsed ? '80px' : '280px'}; 
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          }
           .mobile-only { display: none !important; }
         }
       `}} />
@@ -1432,6 +1727,37 @@ const tableHeaderStyle = {
 const tableCellStyle = {
   padding: '1.25rem 1.5rem',
   fontSize: '0.875rem',
-  color: '#f1f5f9',
+  color: 'var(--text-main)',
   fontWeight: 500
 };
+
+const mobileStyles = `
+  @media (max-width: 1024px) {
+    .dashboard-main { padding: 1.5rem !important; }
+    .stellar-header { 
+      flex-direction: column !important; 
+      align-items: flex-start !important; 
+      gap: 1.5rem !important; 
+    }
+    .grid-3 { grid-template-columns: 1fr !important; }
+    .grid-4 { grid-template-columns: 1fr 1fr !important; }
+    .hide-mobile { display: none !important; }
+    .show-mobile { display: block !important; }
+  }
+
+  @media (max-width: 640px) {
+    .grid-4 { grid-template-columns: 1fr !important; }
+    .shimmer-text { font-size: 1.5rem !important; }
+    .stat-card-value { font-size: 1.75rem !important; }
+    .premium-glass { padding: 1.5rem !important; }
+  }
+
+  .show-mobile { display: none; }
+`;
+
+// Inject styles
+if (typeof document !== 'undefined') {
+  const style = document.createElement('style');
+  style.textContent = mobileStyles;
+  document.head.appendChild(style);
+}

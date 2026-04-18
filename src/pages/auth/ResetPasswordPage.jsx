@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
+import { StarField } from '../../components/common/StarField';
 
 export default function ResetPasswordPage() {
   const [password, setPassword] = useState('');
@@ -27,44 +28,27 @@ export default function ResetPasswordPage() {
 
     try {
       await updatePassword(password);
-      toast.success('Password updated successfully!');
+      toast.success('Security protocol updated successfully!');
       navigate('/login');
     } catch (error) {
-      toast.error(error.message || 'Failed to update password');
+      toast.error(error.message || 'Failed to update credentials');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="cosmic-bg responsive-container" style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'var(--text-main)',
-      padding: '2rem',
-    }}>
-      <div className="stars-container">
-        <div className="stars star-layer-1" />
-        <div className="stars star-layer-2" />
+    <div className="login-wrapper" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div className="cosmic-layer">
+        <StarField />
+        <div className="glow-mesh" />
       </div>
-      <div className="nebula-glow" />
 
-      <div className="premium-glass" style={{
-        padding: '3.5rem',
-        borderRadius: '32px',
-        width: '100%',
-        maxWidth: '440px',
-        position: 'relative',
-        zIndex: 10
-      }}>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem', textAlign: 'center', letterSpacing: '-0.03em' }}>
-          New Password
-        </h2>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', textAlign: 'center', fontWeight: 500 }}>
-          Enter your new neural security key
-        </p>
+      <div className="glass-card" style={{ width: '100%', maxWidth: '440px', padding: '3.5rem', zIndex: 2 }}>
+        <div style={{ marginBottom: '2.5rem', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.5rem' }}>Update Security</h1>
+          <p className="text-muted">Enter your new neural security key.</p>
+        </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <Input
@@ -85,8 +69,8 @@ export default function ResetPasswordPage() {
             required
           />
 
-          <Button type="submit" loading={loading} fullWidth style={{ borderRadius: '16px', padding: '1rem', fontWeight: 800 }}>
-            Update Credentials
+          <Button type="submit" className="btn-primary" loading={loading} fullWidth style={{ padding: '1rem', fontWeight: 800 }}>
+            Calibrate Identity
           </Button>
         </form>
       </div>

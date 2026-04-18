@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Input } from '../../components/common/Input';
 import { Button } from '../../components/common/Button';
+import { StarField } from '../../components/common/StarField';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -22,9 +23,9 @@ export default function ForgotPasswordPage() {
       if (error) throw error;
       
       setSent(true);
-      toast.success('Password reset email sent!');
+      toast.success('Access Link Transmitted.');
     } catch (error) {
-      toast.error(error.message || 'Failed to send reset email');
+      toast.error(error.message || 'Transmission failed');
     } finally {
       setLoading(false);
     }
@@ -32,35 +33,19 @@ export default function ForgotPasswordPage() {
 
   if (sent) {
     return (
-      <div className="cosmic-bg responsive-container" style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'var(--text-main)',
-        padding: '2rem',
-      }}>
-        <div className="stars-container">
-          <div className="stars star-layer-1" />
-          <div className="stars star-layer-2" />
+      <div className="login-wrapper" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div className="cosmic-layer">
+          <StarField />
+          <div className="glow-mesh" />
         </div>
-        <div className="nebula-glow" />
-        
-        <div className="premium-glass" style={{
-          padding: '3.5rem',
-          borderRadius: '32px',
-          width: '100%',
-          maxWidth: '440px',
-          textAlign: 'center',
-          position: 'relative',
-          zIndex: 10
-        }}>
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '1rem', letterSpacing: '-0.03em' }}>Check Your Email</h2>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', fontWeight: 500 }}>
-            We've sent you a password reset link. Please check your inbox for the DialSmart signal.
+
+        <div className="glass-card" style={{ width: '100%', maxWidth: '440px', padding: '3.5rem', textAlign: 'center', zIndex: 2 }}>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '1rem' }}>Check Your Email</h2>
+          <p className="text-muted" style={{ marginBottom: '2.5rem' }}>
+            We've sent a neural reset link to your inbox. Please follow the instructions to restore access to Dailsmart AI.
           </p>
           <Link to="/login">
-            <Button fullWidth style={{ borderRadius: '16px', padding: '1rem' }}>Back to Login</Button>
+            <Button fullWidth className="btn-primary">Back to Login</Button>
           </Link>
         </div>
       </div>
@@ -68,34 +53,17 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="cosmic-bg responsive-container" style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      color: 'var(--text-main)',
-      padding: '2rem',
-    }}>
-      <div className="stars-container">
-        <div className="stars star-layer-1" />
-        <div className="stars star-layer-2" />
+    <div className="login-wrapper" style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+      <div className="cosmic-layer">
+        <StarField />
+        <div className="glow-mesh" />
       </div>
-      <div className="nebula-glow" />
 
-      <div className="premium-glass" style={{
-        padding: '3.5rem',
-        borderRadius: '32px',
-        width: '100%',
-        maxWidth: '440px',
-        position: 'relative',
-        zIndex: 10
-      }}>
-        <h2 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem', textAlign: 'center', letterSpacing: '-0.03em' }}>
-          Reset Password
-        </h2>
-        <p style={{ color: 'var(--text-muted)', marginBottom: '2.5rem', textAlign: 'center', fontWeight: 500 }}>
-          Enter your email to receive a reset link
-        </p>
+      <div className="glass-card" style={{ width: '100%', maxWidth: '440px', padding: '3.5rem', zIndex: 2 }}>
+        <div style={{ marginBottom: '2.5rem', textAlign: 'center' }}>
+          <h1 style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.5rem' }}>Restore Access</h1>
+          <p className="text-muted">Enter your email for a recovery link.</p>
+        </div>
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <Input
@@ -107,14 +75,14 @@ export default function ForgotPasswordPage() {
             required
           />
 
-          <Button type="submit" loading={loading} fullWidth style={{ borderRadius: '16px', padding: '1rem', fontWeight: 800 }}>
+          <Button type="submit" className="btn-primary" loading={loading} fullWidth style={{ padding: '1rem', fontWeight: 800 }}>
             Send Reset Link
           </Button>
         </form>
 
-        <p style={{ textAlign: 'center', marginTop: '2.5rem', color: 'var(--text-muted)', fontSize: '0.9375rem', fontWeight: 500 }}>
-          Remember your password?{' '}
-          <Link to="/login" style={{ color: 'var(--accent)', textDecoration: 'none', fontWeight: 800 }}>
+        <p style={{ textAlign: 'center', marginTop: '2.5rem', fontSize: '0.9375rem' }} className="text-muted">
+          Remember your credentials?{' '}
+          <Link to="/login" style={{ color: 'var(--accent)', fontWeight: 800 }}>
             Sign in
           </Link>
         </p>

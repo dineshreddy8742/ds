@@ -4,7 +4,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { supabase } from '../../lib/supabase';
 import { Button } from '../../components/common/Button';
-import { Bot, User, Building2, Mail, Lock, CheckCircle2, TrendingUp, Sparkles, Briefcase, ChevronDown } from 'lucide-react';
+import { StarField } from '../../components/common/StarField';
+import { Bot, User, Building2, Mail, Lock, CheckCircle2, TrendingUp, Sparkles, Briefcase, ChevronDown, Zap } from 'lucide-react';
 
 export default function SignupPage() {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ export default function SignupPage() {
     confirmPassword: '',
     role: 'COLLEGE',
     org_name: '',
-    industry: 'EdTech / Education',
+    industry: 'Education',
     full_name: '',
   });
   const [loading, setLoading] = useState(false);
@@ -22,6 +23,7 @@ export default function SignupPage() {
   const industries = [
     'EdTech / Education',
     'Real Estate',
+    'Government / Political',
     'Solar / Energy',
     'B2B Lead Generation',
     'Health & Wellness',
@@ -47,7 +49,7 @@ export default function SignupPage() {
         ? { role: 'ADMIN', full_name: formData.full_name }
         : { 
             role: 'COLLEGE', 
-            full_name: formData.org_name, // Important: mapped for the trigger
+            full_name: formData.org_name, 
             industry: formData.industry 
           };
 
@@ -78,123 +80,108 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="cosmic-bg responsive-container" style={{
-      minHeight: '100vh',
-      color: 'var(--text-main)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-    }}>
-
-      {/* --- Cosmic Layers --- */}
-      <div className="stars-container">
-        <div className="stars star-layer-1"></div>
-        <div className="stars star-layer-2"></div>
-        <div className="stars star-layer-3"></div>
+    <div className="login-wrapper" style={{ minHeight: '100vh', display: 'flex', position: 'relative', overflow: 'hidden' }}>
+      {/* Background Effects */}
+      <div className="cosmic-layer">
+        <StarField />
+        <div className="glow-mesh"></div>
       </div>
-      <div className="nebula-glow"></div>
-      
-      {/* --- Subtle Orbs --- */}
-      <div className="glow-orb" style={{ top: '-10%', right: '0%', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)' }}></div>
-      <div className="glow-orb" style={{ bottom: '0%', left: '-10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%)', animationDelay: '-5s' }}></div>
 
-      {/* --- Left Side: Branding & Info --- */}
+      {/* Left Side: Branding */}
       <div className="hide-mobile" style={{
-        flex: 1.1,
-        background: 'var(--panel-bg)',
-        backdropFilter: 'blur(30px)',
+        flex: 1.2,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         padding: '6rem',
-        position: 'relative',
-        borderRight: '1px solid var(--border)'
+        background: 'rgba(2, 6, 23, 0.4)',
+        backdropFilter: 'blur(60px)',
+        borderRight: '1px solid var(--border)',
+        zIndex: 1
       }}>
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.75rem', fontWeight: 900, marginBottom: '4rem' }}>
-            <div style={{ width: '42px', height: '42px', background: 'linear-gradient(135deg, var(--accent), #6366f1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(59, 130, 246, 0.3)' }}>
-              <Bot size={24} color="white" />
-            </div>
-            DialSmart<span style={{ color: 'var(--accent)' }}>.ai</span>
-          </div>
-
-          <h2 className="shimmer-text" style={{ fontSize: '3.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '2.5rem', letterSpacing: '-0.04em' }}>
-            The Global Engine for<br />
-            Lead Conversion.
-          </h2>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-              <div style={{ padding: '0.6rem', background: 'var(--accent-glow)', borderRadius: '10px' }}>
-                <Sparkles size={20} color="var(--accent)" />
-              </div>
-              <div style={{ fontSize: '1.125rem', color: 'var(--text-muted)', fontWeight: 500 }}>Autonomous Voice Agent Orchestration</div>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-              <div style={{ padding: '0.6rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '10px' }}>
-                <CheckCircle2 size={20} color="var(--success)" />
-              </div>
-              <div style={{ fontSize: '1.125rem', color: 'var(--text-muted)', fontWeight: 500 }}>Global Lead Conversion Powerhouse</div>
-            </div>
-          </div>
-
-          <div style={{ 
-            marginTop: '5rem', 
-            padding: '2rem', 
-            background: 'rgba(255,255,255,0.02)', 
-            borderRadius: '24px', 
-            border: '1px solid rgba(255,255,255,0.05)',
-            display: 'flex',
-            gap: '1.5rem',
-            alignItems: 'center',
-            maxWidth: '420px',
-            backdropFilter: 'blur(5px)'
+        <div className="logo" style={{ marginBottom: '3rem', fontSize: '1.75rem' }}>
+          <div className="logo-icon" style={{ 
+            width: '56px', 
+            height: '56px', 
+            background: formData.industry === 'Political / Government' ? 'linear-gradient(135deg, #6366f1, #a855f7)' : (formData.industry === 'Real Estate' ? 'linear-gradient(135deg, #10b981, #3b82f6)' : 'linear-gradient(135deg, var(--accent), var(--accent-secondary))'),
+            boxShadow: 'var(--glow-pink)',
+            transition: 'all 0.5s ease'
           }}>
-            <div style={{ padding: '0.75rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '14px' }}>
-              <TrendingUp size={28} color="#3b82f6" />
+            <Bot size={32} color="white" />
+          </div>
+          <span style={{ fontWeight: 900 }}>Dailsmart <span className="hero-gradient-text" style={{ WebkitTextFillColor: 'unset' }}>AI</span></span>
+        </div>
+
+        <h2 className="hero-gradient-text" style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1, marginBottom: '2.5rem', letterSpacing: '-0.06em' }}>
+          Start your<br />
+          Hyper-Growth.
+        </h2>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div style={{ padding: '0.8rem', background: 'rgba(255, 0, 127, 0.1)', borderRadius: '16px', border: '1px solid var(--accent)' }}>
+              <Sparkles size={24} color="var(--accent)" />
             </div>
-            <div>
-              <div style={{ fontWeight: 900, fontSize: '1.5rem', color: '#fff', letterSpacing: '-0.02em' }}>+240%</div>
-              <div style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 600 }}>Multi-Sector Growth Accuracy</div>
+            <div style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800 }}>Autonomous Orchestration</div>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+            <div style={{ padding: '0.8rem', background: 'rgba(0, 255, 136, 0.1)', borderRadius: '16px', border: '1px solid #00ff88' }}>
+              <TrendingUp size={24} color="#00ff88" />
             </div>
+            <div style={{ fontSize: '1.2rem', color: 'var(--text-main)', fontWeight: 800 }}>Global Scalability</div>
+          </div>
+        </div>
+
+        <div style={{ 
+          marginTop: '5rem', 
+          padding: '2.5rem', 
+          background: 'rgba(255,255,255,0.03)', 
+          borderRadius: '32px', 
+          border: '1px solid var(--border)',
+          display: 'flex',
+          gap: '2rem',
+          alignItems: 'center',
+          maxWidth: '450px',
+        }}>
+          <div style={{ padding: '1rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '20px' }}>
+            <Zap size={36} color="#3b82f6" />
+          </div>
+          <div>
+            <div style={{ fontWeight: 900, fontSize: '2rem', color: '#fff', lineHeight: 1 }}>+240%</div>
+            <div className="text-muted" style={{ fontSize: '0.9rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '0.25rem' }}>Revenue Impact</div>
           </div>
         </div>
       </div>
 
-      {/* --- Right Side: Signup Form --- */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2rem',
-        zIndex: 2
-      }}>
-        <div className="premium-glass" style={{ width: '100%', maxWidth: '480px', padding: '3rem', borderRadius: '32px', overflowY: 'auto', maxHeight: '95vh' }}>
-          <div style={{ marginBottom: '2.5rem' }}>
-            <h1 style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-0.03em' }}>Create your account</h1>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1rem', fontWeight: 500 }}>Scale your conversion instantly.</p>
+      {/* Right Side: Signup Form */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', zIndex: 2 }}>
+        <div className="premium-glass" style={{ width: '100%', maxWidth: '540px', padding: '3.5rem', maxHeight: '95vh', overflowY: 'auto', borderRadius: '40px' }}>
+          <div style={{ marginBottom: '2.5rem', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '2.75rem', fontWeight: 900, marginBottom: '0.5rem', letterSpacing: '-0.05em' }}>Create Profile</h1>
+            <p className="text-muted" style={{ fontWeight: 600, fontSize: '0.95rem' }}>Initializing AI Data Node.</p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            {/* Account Type Toggle */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', background: 'rgba(255, 255, 255, 0.03)', padding: '0.5rem', borderRadius: '16px', border: '1px solid rgba(255, 255, 255, 0.05)' }}>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Role Toggle */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', background: 'rgba(255, 255, 255, 0.03)', padding: '0.6rem', borderRadius: '20px', border: '1px solid var(--border)' }}>
               <button 
                 type="button" 
                 onClick={() => handleRoleChange('COLLEGE')}
                 style={{
-                  padding: '0.875rem',
-                  borderRadius: '12px',
+                  padding: '1rem',
+                  borderRadius: '16px',
                   border: 'none',
                   background: formData.role === 'COLLEGE' ? 'var(--accent)' : 'transparent',
                   color: formData.role === 'COLLEGE' ? '#fff' : 'var(--text-muted)',
-                  fontSize: '0.875rem',
-                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  fontWeight: 800,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.6rem',
-                  transition: 'all 0.2s',
-                  boxShadow: formData.role === 'COLLEGE' ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none'
+                  transition: '0.3s',
+                  boxShadow: formData.role === 'COLLEGE' ? 'var(--glow-pink)' : 'none'
                 }}
               >
                 <Briefcase size={18} /> Business
@@ -203,154 +190,154 @@ export default function SignupPage() {
                 type="button" 
                 onClick={() => handleRoleChange('ADMIN')}
                 style={{
-                  padding: '0.875rem',
-                  borderRadius: '12px',
+                  padding: '1rem',
+                  borderRadius: '16px',
                   border: 'none',
-                  background: formData.role === 'ADMIN' ? 'var(--accent)' : 'transparent',
+                  background: formData.role === 'ADMIN' ? 'var(--accent-secondary)' : 'transparent',
                   color: formData.role === 'ADMIN' ? '#fff' : 'var(--text-muted)',
-                  fontSize: '0.875rem',
-                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  fontWeight: 800,
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: '0.6rem',
-                  transition: 'all 0.2s',
-                  boxShadow: formData.role === 'ADMIN' ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none'
+                  transition: '0.3s',
+                  boxShadow: formData.role === 'ADMIN' ? '0 0 20px rgba(112, 0, 255, 0.4)' : 'none'
                 }}
               >
                 <User size={18} /> Provider
               </button>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              {formData.role === 'COLLEGE' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+              {formData.role === 'COLLEGE' ? (
                 <>
-                  <div>
-                    <label style={labelStyle}>Organization / Business Name</label>
+                  <div className="input-group">
+                    <label style={miniLabelStyle}>Organization / Institution Name</label>
                     <input
+                      className="input-control"
                       value={formData.org_name}
                       onChange={(e) => setFormData({ ...formData, org_name: e.target.value })}
                       placeholder="e.g. Acme Corp"
                       required
-                      style={inputStyle}
+                      style={inputOver}
                     />
                   </div>
-                  <div>
-                    <label style={labelStyle}>Select Industry</label>
-                    <div style={{ position: 'relative' }}>
-                      <select
-                        value={formData.industry}
-                        onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
-                        style={{ ...inputStyle, appearance: 'none', cursor: 'pointer' }}
-                      >
-                        {industries.map(ind => (
-                          <option key={ind} value={ind} style={{ background: '#020617', color: '#fff' }}>{ind}</option>
-                        ))}
-                      </select>
-                      <ChevronDown size={18} style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: '#94a3b8' }} />
-                    </div>
+                  <div className="input-group">
+                    <label style={miniLabelStyle}>Industry Sector</label>
+                    <select
+                      className="input-control"
+                      value={formData.industry}
+                      onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
+                      style={{ ...inputOver, appearance: 'none', cursor: 'pointer' }}
+                    >
+                      {industries.map(ind => (
+                        <option key={ind} value={ind} style={{ background: '#020617' }}>{ind}</option>
+                      ))}
+                    </select>
                   </div>
                 </>
-              )}
-
-              {formData.role === 'ADMIN' && (
-                <div>
-                  <label style={labelStyle}>Full Name</label>
+              ) : (
+                <div className="input-group">
+                  <label style={miniLabelStyle}>Commander Name</label>
                   <input
+                    className="input-control"
                     value={formData.full_name}
                     onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
                     placeholder="John Doe"
                     required
-                    style={inputStyle}
+                    style={inputOver}
                   />
                 </div>
               )}
 
-              <div>
-                <label style={labelStyle}>Business Email</label>
+              <div className="input-group">
+                <label style={miniLabelStyle}>Business Email</label>
                 <input
                   type="email"
+                  className="input-control"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   placeholder="name@company.com"
                   required
-                  style={inputStyle}
+                  style={inputOver}
                 />
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                <div>
-                  <label style={labelStyle}>Password</label>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem' }}>
+                <div className="input-group">
+                  <label style={miniLabelStyle}>Security Key</label>
                   <input
                     type="password"
+                    className="input-control"
                     value={formData.password}
                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     placeholder="••••••••"
                     required
-                    style={inputStyle}
+                    style={inputOver}
                   />
                 </div>
-                <div>
-                  <label style={labelStyle}>Confirm</label>
+                <div className="input-group">
+                  <label style={miniLabelStyle}>Verify Key</label>
                   <input
                     type="password"
+                    className="input-control"
                     value={formData.confirmPassword}
                     onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     placeholder="••••••••"
                     required
-                    style={inputStyle}
+                    style={inputOver}
                   />
                 </div>
               </div>
             </div>
 
-            <Button type="submit" loading={loading} fullWidth style={{ padding: '1.125rem', borderRadius: '16px', marginTop: '0.5rem', fontSize: '1rem', fontWeight: 800 }}>
-              Get Started
+            <Button type="submit" className="btn-genz" loading={loading} style={{ width: '100%', padding: '1.25rem', marginTop: '1.5rem', fontSize: '1.1rem', fontWeight: 900 }}>
+              Deploy Command Hub <Zap size={20} />
             </Button>
           </form>
 
-          <div style={{ marginTop: '2rem', textAlign: 'center', fontSize: '0.875rem', color: '#64748b', fontWeight: 500 }}>
-            Already part of the network?{' '}
-            <Link to="/login" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 800 }}>
+          <div style={{ marginTop: '2.5rem', textAlign: 'center', fontSize: '1rem', fontWeight: 600 }} className="text-muted">
+            Already verified?{' '}
+            <Link to="/login" style={{ color: 'var(--accent)', fontWeight: 800, textDecoration: 'none' }}>
               Sign in
             </Link>
           </div>
         </div>
       </div>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style>{`
+        .input-control:focus {
+          border-color: var(--accent);
+          box-shadow: 0 0 15px var(--accent-glow);
+        }
         @media (max-width: 1024px) {
           .hide-mobile { display: none !important; }
         }
-        /* Custom scrollbar for form */
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.3); border-radius: 10px; }
-      `}} />
+      `}</style>
     </div>
   );
 }
 
-const labelStyle = {
+const miniLabelStyle = {
   display: 'block',
-  marginBottom: '0.5rem',
-  fontSize: '0.8125rem',
-  fontWeight: 600,
+  marginBottom: '0.6rem',
+  fontSize: '0.75rem',
+  fontWeight: 900,
   color: 'var(--text-muted)',
   textTransform: 'uppercase',
-  letterSpacing: '0.05em'
+  letterSpacing: '0.08em'
 };
 
-const inputStyle = {
-  width: '100%',
-  padding: '1.125rem 1.25rem',
-  background: 'var(--panel-bg)',
+const inputOver = {
+  background: 'rgba(255,255,255,0.03)',
   border: '1px solid var(--border)',
   borderRadius: '16px',
-  color: 'var(--text-main)',
+  padding: '1.125rem',
+  fontSize: '1rem',
+  color: 'white',
+  width: '100%',
   outline: 'none',
-  fontSize: '0.9375rem',
-  transition: 'all 0.3s ease',
-  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)',
+  transition: '0.3s'
 };
-

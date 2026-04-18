@@ -23,7 +23,9 @@ import {
   Phone,
   Bot,
   Filter,
-  PhoneCall
+  PhoneCall,
+  Edit2,
+  X
 } from 'lucide-react';
 import { leadsAPI, collegesAPI } from '../../services/api';
 import { Sidebar } from '../../components/layout/Sidebar';
@@ -269,7 +271,7 @@ export default function CollegeManagementPage() {
         </div>
         <button 
           onClick={() => setIsSidebarOpen(true)}
-          style={{ background: 'transparent', border: 'none', color: 'var(--text-main)', cursor: 'pointer' }}
+          style={{ background: 'var(--panel-bg)', border: '1px solid var(--border)', color: 'var(--text-main)', padding: '0.4rem', borderRadius: '8px', cursor: 'pointer' }}
         >
           <Menu size={24} />
         </button>
@@ -651,6 +653,11 @@ export default function CollegeManagementPage() {
         @media (min-width: 1025px) {
           .dashboard-main { margin-left: 280px; }
           .mobile-only { display: none !important; }
+        }
+        @media (max-width: 1024px) {
+          .dashboard-main { margin-left: 0 !important; padding: 1.5rem !important; padding-top: 80px !important; }
+          .shimmer-text { font-size: 1.75rem !important; }
+          header { flex-direction: column !important; align-items: flex-start !important; gap: 1.5rem !important; }
         }
       `}} />
     </div>

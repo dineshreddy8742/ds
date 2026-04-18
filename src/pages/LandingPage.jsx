@@ -1,506 +1,510 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useTheme } from '../contexts/ThemeContext';
-import { toast } from 'react-hot-toast';
-import { inquiriesAPI } from '../services/api';
 import { 
-  ShieldCheck, 
-  BarChart3, 
-  FileSpreadsheet, 
-  ArrowRight, 
-  CheckCircle2,
-  Zap,
-  Globe,
-  Database,
-  Bot,
-  Mic,
-  TrendingUp,
-  Clock,
-  Home,
-  Megaphone,
-  GraduationCap,
+  Bot, 
+  ChevronRight, 
+  Zap, 
+  Shield, 
+  Globe, 
+  Smartphone, 
+  CheckCircle, 
+  Star, 
+  Play,
+  ArrowRight,
+  MousePointer2,
+  Cpu,
+  BarChart3,
+  MessageCircle,
   Users,
-  Search,
-  MonitorCheck,
-  Layers,
-  Shield,
-  CreditCard,
-  HelpCircle,
-  Quote,
-  Star,
-  MessageSquare
+  Menu,
+  X
 } from 'lucide-react';
+import { StarField } from '../components/common/StarField';
 import { Button } from '../components/common/Button';
 
 export default function LandingPage() {
-  const [inquiryForm, setInquiryForm] = useState({ email: '', industry: 'Education' });
-  const [submitting, setSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const handleInquirySubmit = async (e) => {
-    e.preventDefault();
-    if (!inquiryForm.email) return toast.error('Please enter your email');
-    
-    setSubmitting(true);
-    try {
-      await inquiriesAPI.submit(inquiryForm);
-      toast.success('Demo request sent! We will contact you shortly.');
-      setInquiryForm({ email: '', industry: 'Education' });
-    } catch (error) {
-      toast.error('Failed to send request. Please try again.');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-   return (
-    <div className="landing-grid" style={{ position: 'relative', minHeight: '100vh', color: 'var(--text-main)', background: 'var(--bg-main)', transition: 'background 0.3s ease, color 0.3s ease' }}>
-      <div className="stars-container">
-        <div className="stars star-layer-1" />
-        <div className="stars star-layer-2" />
-        <div className="stars star-layer-3" />
-      </div>
-      <div className="nebula-glow" />
-      {/* Background Blobs for Premium Feel */}
-      <div className="blob-container">
-        <div className="blob blob-1" style={{ opacity: 0.15, filter: 'blur(100px)' }}></div>
-        <div className="blob blob-2" style={{ opacity: 0.1, filter: 'blur(100px)' }}></div>
-        <div className="blob blob-3" style={{ opacity: 0.1, filter: 'blur(100px)' }}></div>
-      </div>
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
       
+      const reveals = document.querySelectorAll('.reveal-on-scroll');
+      reveals.forEach(el => {
+        const windowHeight = window.innerHeight;
+        const elementTop = el.getBoundingClientRect().top;
+        const elementVisible = 150;
+        if (elementTop < windowHeight - elementVisible) {
+          el.classList.add('visible');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Initial check
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <div className="landing-page" style={{ position: 'relative', overflow: 'hidden' }}>
+      {/* Gen Z Background */}
+      <div className="cosmic-layer">
+        <StarField />
+        <div className="nebula-cloud" style={{ position: 'absolute', top: '10%', left: '10%', width: '60vw', height: '60vh', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)', filter: 'blur(80px)', borderRadius: '50%', pointerEvents: 'none' }}></div>
+        <div className="nebula-cloud" style={{ position: 'absolute', bottom: '10%', right: '10%', width: '50vw', height: '50vh', background: 'radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, transparent 70%)', filter: 'blur(80px)', borderRadius: '50%', pointerEvents: 'none' }}></div>
+        <div className="glow-mesh"></div>
+      </div>
+
       {/* Navigation */}
-      <header style={{
+      <nav style={{
+        position: 'fixed',
+        top: '1.5rem',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'min(1200px, 92%)',
+        height: '70px',
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        padding: '1.25rem 8%',
-        background: 'var(--panel-bg)',
-        backdropFilter: 'blur(20px)',
-        borderBottom: '1px solid var(--border)',
-        position: 'sticky',
-        top: 0,
-        zIndex: 100,
+        justifyContent: 'space-between',
+        padding: '0 2rem',
+        zIndex: 1000,
+        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+        background: 'rgba(15, 23, 42, 0.4)',
+        backdropFilter: 'blur(16px) saturate(180%)',
+        borderRadius: '24px',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        boxShadow: scrolled ? '0 20px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255,255,255,0.05)' : 'none'
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.5rem', fontWeight: 800 }}>
-          <div style={{ 
-            width: '36px', height: '36px', 
-            background: 'linear-gradient(135deg, var(--accent), #6366f1)', 
-            borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center'
-          }}>
-            <Bot size={22} color="white" />
+        <div className="logo" style={{ fontSize: '1.4rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+          <div style={{ width: '36px', height: '36px', background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)' }}>
+            <Bot size={20} color="white" />
           </div>
-          DialSmart<span style={{ color: 'var(--accent)' }}>.ai</span>
+          <span style={{ letterSpacing: '-0.02em' }}>Dailsmart <span style={{ color: '#3b82f6' }}>AI</span></span>
         </div>
-        
-        <nav style={{ display: 'flex', gap: '2.5rem', fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-muted)' }} className="hide-mobile">
-          <a href="#about" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}>What is DialSmart?</a>
-          <a href="#workflow" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}>Workflow</a>
-          <a href="#pricing" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s' }}>Pricing</a>
-        </nav>
 
-        <div style={{ display: 'flex', gap: '1rem' }}>
-          <Link to="/login">
-            <Button variant="ghost" size="sm">Admin Portal</Button>
-          </Link>
-          <Link to="/signup">
-            <Button size="sm" style={{ background: '#3b82f6', borderRadius: '8px' }}>Join the Network</Button>
-          </Link>
+        <div className="hide-mobile" style={{ display: 'flex', gap: '2rem' }}>
+          {['Features', 'Workflow', 'Results', 'Pricing'].map(item => (
+            <a key={item} href={`#${item.toLowerCase()}`} style={{ 
+              color: 'rgba(255,255,255,0.7)', 
+              textDecoration: 'none', 
+              fontWeight: 700, 
+              fontSize: '0.85rem', 
+              transition: '0.3s',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em'
+            }} className="nav-link-premium">
+              {item}
+            </a>
+          ))}
         </div>
-      </header>
 
-      <main>
-        {/* --- HERO SECTION --- */}
-        <section style={{ 
-          maxWidth: '1200px', margin: '0 auto', padding: '8rem 2rem 6rem', 
-          textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center'
+        <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+          <Link to="/login" className="hide-mobile" style={{ textDecoration: 'none' }}>
+            <span style={{ color: 'white', fontWeight: 800, fontSize: '0.85rem', marginRight: '1rem', cursor: 'pointer', opacity: 0.8 }}>Log In</span>
+          </Link>
+          <Link to="/signup" style={{ textDecoration: 'none' }}>
+            <button style={{ 
+              padding: '0.75rem 1.75rem', 
+              background: 'white', 
+              color: 'black', 
+              border: 'none', 
+              borderRadius: '12px', 
+              fontWeight: 900, 
+              fontSize: '0.85rem', 
+              cursor: 'pointer',
+              boxShadow: '0 10px 20px rgba(255,255,255,0.1)'
+            }}>
+              Start Building
+            </button>
+          </Link>
+          <button 
+            className="mobile-only" 
+            onClick={() => setIsMobileMenuOpen(true)}
+            style={{ background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}
+          >
+            <Menu size={24} />
+          </button>
+        </div>
+      </nav>
+
+      {/* Mobile Menu Overlay */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(2, 6, 23, 0.95)',
+        backdropFilter: 'blur(20px)',
+        zIndex: 2000,
+        display: isMobileMenuOpen ? 'flex' : 'none',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '2.5rem',
+        animation: 'fadeIn 0.3s ease-out'
+      }}>
+        <button 
+          onClick={() => setIsMobileMenuOpen(false)}
+          style={{ position: 'absolute', top: '2rem', right: '2rem', background: 'transparent', border: 'none', color: 'white' }}
+        >
+          <X size={32} />
+        </button>
+        {['Features', 'Workflow', 'Results', 'Pricing'].map(item => (
+          <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setIsMobileMenuOpen(false)} style={{ color: 'white', textDecoration: 'none', fontSize: '1.5rem', fontWeight: 900 }} className="hero-gradient-text">
+            {item}
+          </a>
+        ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '80%', marginTop: '2rem' }}>
+          <Button onClick={() => navigate('/login')} variant="secondary" fullWidth>Log In</Button>
+          <Button onClick={() => navigate('/signup')} className="btn-genz" fullWidth>Start Free Trial</Button>
+        </div>
+      </div>
+
+      {/* Hero Section */}
+      <section style={{ 
+        minHeight: '100vh', 
+        display: 'flex', 
+        flexDirection: 'column', 
+        justifyContent: 'center', 
+        alignItems: 'center', 
+        textAlign: 'center', 
+        padding: '120px 5% 60px' 
+      }}>
+        <div className="reveal-on-scroll" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', padding: '0.6rem 1.25rem', background: 'rgba(255,255,255,0.05)', borderRadius: '100px', border: '1px solid var(--border)', marginBottom: '2.5rem', fontSize: '0.85rem', fontWeight: 700 }}>
+          <span style={{ padding: '0.1rem 0.6rem', background: 'var(--accent)', borderRadius: '100px', color: 'white', fontSize: '0.7rem' }}>NEW</span>
+          Neural Voice v2.0 is now live ⚡
+        </div>
+
+        <h1 className="hero-gradient-text" style={{ 
+          fontSize: 'clamp(3rem, 10vw, 7.5rem)', 
+          fontWeight: 900, 
+          lineHeight: 0.95, 
+          letterSpacing: '-0.06em', 
+          maxWidth: '1300px',
+          marginBottom: '2.5rem',
+          filter: 'drop-shadow(0 0 30px rgba(59, 130, 246, 0.3))'
         }}>
-          <div className="stat-pill" style={{ 
-            background: 'var(--accent-glow)', border: '1px solid var(--border)',
-            color: 'var(--accent)', fontWeight: 600, padding: '0.5rem 1.25rem', borderRadius: '100px',
-            marginBottom: '2rem', fontSize: '0.875rem'
-          }}>
-            ✨ Save 70% Operational Budget with Voice AI
-          </div>
+          AI that talks like a human,<br />
+          vibe checks your leads.
+        </h1>
 
-          <h1 className="hero-gradient-text" style={{
-            fontSize: 'clamp(2.5rem, 7vw, 5.5rem)', fontWeight: 900,
-            lineHeight: 1.05, letterSpacing: '-0.05em', margin: '0 0 2rem',
-            maxWidth: '1000px', animation: 'fadeInUp 1s ease-out',
-          }}>
-            Automate Your Leads<br />Scale Your Impact.
-          </h1>
+        <p className="reveal-on-scroll" style={{ 
+          fontSize: 'clamp(1rem, 2vw, 1.4rem)', 
+          color: 'var(--text-muted)', 
+          maxWidth: '800px', 
+          lineHeight: 1.6, 
+          marginBottom: '3.5rem',
+          fontWeight: 500
+        }}>
+          Dailsmart AI orchestrates autonomous voice agents that qualify, 
+          follow up, and close leads 24/7. Zero latency. Infinite scale.
+        </p>
+
+        <div className="reveal-on-scroll" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+          <Button onClick={() => navigate('/signup')} className="btn-genz" style={{ padding: '1.25rem 2.5rem', fontSize: '1.1rem' }}>
+            Get Started Free <Bot size={20} />
+          </Button>
+          <Button variant="secondary" style={{ padding: '1.25rem 2.5rem', fontSize: '1.1rem', background: 'rgba(255,255,255,0.05)' }}>
+            Watch Demo <Play size={20} fill="currentColor" />
+          </Button>
+        </div>
+
+        {/* Floating elements */}
+        <div className="reveal-on-scroll floating-card hide-mobile" style={{ 
+          position: 'absolute', 
+          top: '30%', 
+          left: '5%', 
+          padding: '1.5rem', 
+          background: 'var(--panel-bg)', 
+          backdropFilter: 'blur(20px)', 
+          borderRadius: '20px', 
+          border: '1px solid var(--border)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
+        }}>
+          <div style={{ width: '48px', height: '48px', background: 'rgba(0, 255, 136, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <Zap size={24} color="#00ff88" />
+          </div>
+          <div>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700 }}>LATENCY</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>&lt; 200ms</div>
+          </div>
+        </div>
+
+        <div className="reveal-on-scroll floating-card hide-mobile" style={{ 
+          position: 'absolute', 
+          bottom: '20%', 
+          right: '5%', 
+          padding: '1.5rem', 
+          background: 'var(--panel-bg)', 
+          backdropFilter: 'blur(20px)', 
+          borderRadius: '20px', 
+          border: '1px solid var(--border)',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '1rem',
+          animationDelay: '-3s',
+          boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
+        }}>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontWeight: 700 }}>CONVERSION</div>
+            <div style={{ fontSize: '1.2rem', fontWeight: 900 }}>+240%</div>
+          </div>
+          <div style={{ width: '48px', height: '48px', background: 'rgba(255, 0, 127, 0.1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <BarChart3 size={24} color="var(--accent)" />
+          </div>
+        </div>
+      </section>
+
+      {/* Tech Chips */}
+      <div className="reveal-on-scroll" style={{ padding: '4rem 5%', display: 'flex', justifyContent: 'center', gap: '4rem', flexWrap: 'wrap', background: 'rgba(255,255,255,0.02)', borderY: '1px solid var(--border)' }}>
+        {['Advanced Neural Voice', 'Vocal Intent Analysis', 'Multi-Language Sync', 'Instant SSRL'].map(tech => (
+          <div key={tech} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)', fontWeight: 800, fontSize: '0.9rem', letterSpacing: '0.05em' }}>
+            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)', boxShadow: 'var(--glow-pink)' }}></div>
+            {tech.toUpperCase()}
+          </div>
+        ))}
+      </div>
+
+      {/* Features Grid */}
+      <section id="features" style={{ padding: '120px 5%' }}>
+        <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
+          <h2 className="hero-gradient-text" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', fontWeight: 900, marginBottom: '1.5rem' }}>Built for the Hyper-Growth Era</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', fontWeight: 500 }}>Everything you need to automate your outbound operations at lightspeed.</p>
+        </div>
+
+        <div className="grid-3">
+          <FeatureCard 
+            icon={<Cpu size={32} />} 
+            title="Neural Voice Engine" 
+            desc="Indistinguishable from human conversation. Adaptive tone, emotion, and pace handling."
+            color="#ff007f"
+          />
+          <FeatureCard 
+            icon={<Smartphone size={32} />} 
+            title="Smart Integration" 
+            desc="Syncs seamlessly with your existing CRM, Google Sheets, and custom API endpoints."
+            color="#7000ff"
+          />
+          <FeatureCard 
+            icon={<MessageCircle size={32} />} 
+            title="Real-time Intent" 
+            desc="Understands not just what people say, but what they mean. High-velocity qualification."
+            color="#3b82f6"
+          />
+          <FeatureCard 
+            icon={<Globe size={32} />} 
+            title="Global Presence" 
+            desc="Instantly deploy agents in 40+ languages with regional accents and cultural context."
+            color="#00ff88"
+          />
+          <FeatureCard 
+            icon={<Users size={32} />} 
+            title="Infinite Concurrency" 
+            desc="One agent or one million. Scale your team to handle any load without hiring anyone."
+            color="#ffcc00"
+          />
+          <FeatureCard 
+            icon={<Shield size={32} />} 
+            title="Secure & Compliant" 
+            desc="Enterprise encryption and strict compliance handling for sensitive data sectors."
+            color="#ff3333"
+          />
+        </div>
+      </section>
+
+      {/* Powerful CTA */}
+      <section style={{ padding: '120px 5%', textAlign: 'center' }}>
+        <div className="premium-glass reveal-on-scroll" style={{ padding: '6rem 2rem', borderRadius: '48px', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, var(--accent-glow) 0%, transparent 70%)' }}></div>
+          <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '400px', height: '400px', background: 'radial-gradient(circle, rgba(112, 0, 255, 0.2) 0%, transparent 70%)' }}></div>
           
-          <p style={{
-            fontSize: 'clamp(1.125rem, 2vw, 1.4rem)', color: 'var(--text-muted)',
-            maxWidth: '800px', lineHeight: 1.6, marginBottom: '3.5rem',
-            animation: 'fadeInUp 1s ease-out 0.2s both',
-          }}>
-            Stop wasting manpower on manual calls. DialSmart uses Advanced Voice AI to 
-            qualify, score, and distribute leads 24/7—saving you time while 
-            improving conversion by up to 3x.
-          </p>
-          
-          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '1.25rem' }}>
-            <Link to="/signup">
-              <Button size="lg" style={{ padding: '1.25rem 3rem', fontSize: '1.125rem', borderRadius: '12px' }}>
-                Launch Now <ArrowRight size={20} style={{ marginLeft: '0.5rem' }} />
-              </Button>
-            </Link>
-          </div>
-
-          <div style={{ marginTop: '6rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '3rem', width: '100%' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fff' }}>24/7</div>
-              <div style={{ color: '#4b5563', fontWeight: 600 }}>Active Monitoring</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fff' }}>70%</div>
-              <div style={{ color: '#4b5563', fontWeight: 600 }}>Budget Saved</div>
-            </div>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#fff' }}>10k+</div>
-              <div style={{ color: '#4b5563', fontWeight: 600 }}>Calls/Hr Capacity</div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- HOW IT WORKS --- */}
-        <section id="workflow" style={{ padding: '8rem 0', maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
-          <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-            <h2 style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '1rem' }}>How It <span style={{ color: 'var(--accent)' }}>Works</span></h2>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.25rem' }}>Three simple steps to total lead automation.</p>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem', position: 'relative' }}>
-            <WorkflowStep 
-              num="01"
-              icon={<FileSpreadsheet size={32} color="var(--accent)" />}
-              title="Sync Data"
-              desc="Connect your Google Sheets or upload CSV. Leads flow in automatically."
-            />
-            <WorkflowStep 
-              num="02"
-              icon={<Bot size={32} color="#8b5cf6" />}
-              title="AI Call & Qualify"
-              desc="Our Voice AI calls leads within seconds, qualifies intent, and logs results."
-            />
-            <WorkflowStep 
-              num="03"
-              icon={<TrendingUp size={32} color="#10b981" />}
-              title="Scale & Convert"
-              desc="High-intent leads are flagged. Your team closes students with 100% focus."
-            />
-          </div>
-        </section>
-
-        {/* --- INDUSTRIES --- */}
-        <section id="services" style={{ padding: '6rem 0', maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem' }}>
-            <ServiceCard 
-              icon={<GraduationCap size={32} color="#3b82f6" />}
-              title="Admission Consulting"
-              desc="Qualify student leads automatically. Segment by course preference, budget, and academic background within seconds."
-              stats="85% Counseling Time Saved"
-            />
-            <ServiceCard 
-              icon={<Home size={32} color="#10b981" />}
-              title="Real Estate"
-              desc="Never miss a buyer. Our AI handles initial property inquiries, budget checks, and location preferences 24/7."
-              stats="3x Higher Call Rate"
-            />
-            <ServiceCard 
-              icon={<Megaphone size={32} color="#f59e0b" />}
-              title="Advertising & Sales"
-              desc="Scale your outbound ops. Convert Facebook/Google lead forms into qualified prospects without adding a single SDR."
-              stats="70% Cost Reduction"
-            />
-          </div>
-        </section>
-
-        {/* --- TESTIMONIALS --- */}
-        <section style={{ padding: '8rem 0', background: 'rgba(59, 130, 246, 0.03)' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
-            <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-              <h2 style={{ fontSize: '3rem', fontWeight: 800 }}>Trusted by <span style={{ color: 'var(--accent)' }}>Market Leaders</span></h2>
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
-              <TestimonialCard 
-                name="Siddharth Mehta"
-                role="Director, EduGlobal"
-                quote="DialSmart changed how we handle admissions. We replaced 4 callers with one AI, and our enrollment grew by 40%."
-              />
-              <TestimonialCard 
-                name="Ananya Sharma"
-                role="Founder, RealConnect"
-                quote="The Google Sheets sync is magic. Property inquiries are qualified instantly, even at 2 AM. Unreal efficiency."
-              />
-              <TestimonialCard 
-                name="Vikram Singh"
-                role="CEO, AdVantage"
-                quote="We used to lose leads because of slow follow-ups. Now, our AI calls them in under 10 seconds. Highly recommended."
-              />
-            </div>
-          </div>
-        </section>
-
-
-
-        {/* --- GLOBAL LANGUAGE SUPPORT --- */}
-        <section style={{ padding: '8rem 0', background: 'rgba(59, 130, 246, 0.02)' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
-            <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-              <div className="stat-pill" style={{ margin: '0 auto 2rem', background: 'var(--accent-glow)', border: '1px solid var(--border)', color: 'var(--accent)' }}>Truly Global AI</div>
-              <h2 style={{ fontSize: '3rem', fontWeight: 800 }}>Break the <span style={{ color: 'var(--accent)' }}>Language Barrier</span></h2>
-              <p style={{ color: 'var(--text-muted)', fontSize: '1.25rem' }}>Our AI handles calls in 20+ languages with native fluency.</p>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '3rem' }}>
-              <div className="glass-card" style={{ padding: '2.5rem', borderRadius: '32px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-                  <div style={{ padding: '0.75rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px' }}>
-                    <Globe size={24} color="#3b82f6" />
-                  </div>
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Indian Markets</h3>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                  {['Telugu', 'Hindi', 'Tamil', 'Kannada', 'Malayalam', 'Bengali', 'Marathi', 'Gujarati'].map(lang => (
-                    <span key={lang} style={{ padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '100px', fontSize: '0.875rem', fontWeight: 600 }}>{lang}</span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="glass-card" style={{ padding: '2.5rem', borderRadius: '32px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
-                  <div style={{ padding: '0.75rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '12px' }}>
-                    <Zap size={24} color="#10b981" />
-                  </div>
-                  <h3 style={{ fontSize: '1.5rem', fontWeight: 800 }}>Global Coverage</h3>
-                </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                  {['English (US/UK/AU)', 'Spanish', 'French', 'German', 'Arabic', 'Japanese', 'Mandarin'].map(lang => (
-                    <span key={lang} style={{ padding: '0.4rem 1rem', background: 'rgba(255,255,255,0.05)', borderRadius: '1000px', fontSize: '0.875rem', fontWeight: 600 }}>{lang}</span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- FAQ SECTION --- */}
-        <section style={{ padding: '8rem 0', maxWidth: '800px', margin: '0 auto', padding: '0 2rem' }}>
-          <h2 style={{ fontSize: '2.5rem', fontWeight: 800, textAlign: 'center', marginBottom: '4rem' }}>Frequently Asked Questions</h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <FAQItem 
-              q="Does the AI sound natural?" 
-              a="Yes! We use high-fidelity neural text-to-speech that mimics human intonation and emotion. Most leads don't even realize they are talking to an AI."
-            />
-            <FAQItem 
-              q="How does the Google Sheet sync work?" 
-              a="You simply paste your Sheet ID and enable our Apps Script. Whenever a new row is added, it triggers the AI call instantly—even if you're sleeping."
-            />
-            <FAQItem 
-              q="Is my data secure?" 
-              a="We use enterprise-grade encryption and Supabase Row-Level Security. Each client's data is isolated and never shared between dashboards."
-            />
-          </div>
-        </section>
-
-        {/* --- LIVE DASHBOARD PREVIEW --- */}
-        <section style={{ padding: '8rem 0', background: 'linear-gradient(to bottom, transparent, rgba(59, 130, 246, 0.05), transparent)' }}>
-          <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 2rem' }}>
-            <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-              <h2 style={{ fontSize: '3rem', fontWeight: 800 }}>AI Lead <span style={{ color: '#3b82f6' }}>Intelligence</span></h2>
-              <p style={{ color: '#94a3b8', fontSize: '1.25rem' }}>See the result of 24/7 autonomous calling.</p>
-            </div>
-
-            <div className="glass-card" style={{ padding: '3rem', borderRadius: '40px', border: '1px solid rgba(59, 130, 246, 0.2)', overflow: 'hidden' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '2rem', marginBottom: '4rem' }}>
-                <div style={{ padding: '1.5rem', background: 'rgba(0,0,0,0.3)', borderRadius: '16px' }}>
-                  <div style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>CONVERSION RATE</div>
-                  <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#10b981' }}>+245%</div>
-                </div>
-                <div style={{ padding: '1.5rem', background: 'rgba(0,0,0,0.3)', borderRadius: '16px' }}>
-                  <div style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>QUALIFIED LEADS</div>
-                  <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#3b82f6' }}>1,290</div>
-                </div>
-                <div style={{ padding: '1.5rem', background: 'rgba(0,0,0,0.3)', borderRadius: '16px' }}>
-                  <div style={{ color: '#64748b', fontSize: '0.875rem', fontWeight: 600, marginBottom: '0.5rem' }}>AI CALL MINUTES</div>
-                  <div style={{ fontSize: '2.5rem', fontWeight: 800, color: '#8b5cf6' }}>4,902</div>
-                </div>
-              </div>
-
-              <div style={{ height: '300px', width: '100%', display: 'flex', alignItems: 'flex-end', gap: '2%', paddingBottom: '1rem' }}>
-                {[60, 45, 80, 55, 90, 70, 95, 85, 100, 75, 40, 80].map((h, i) => (
-                  <div key={i} style={{ 
-                    flex: 1, 
-                    height: `${h}%`, 
-                    background: i === 8 ? 'linear-gradient(to top, #3b82f6, #60a5fa)' : 'rgba(59, 130, 246, 0.1)',
-                    borderRadius: '8px 8px 0 0',
-                  }} />
-                ))}
-              </div>
-              <div style={{ textAlign: 'center', marginTop: '1rem', color: '#475569', fontSize: '0.8125rem', fontWeight: 700 }}>MONTHLY LEAD GROWTH PERFORMANCE</div>
-            </div>
-          </div>
-        </section>
-
-        {/* --- DIRECT INQUIRY FORM --- */}
-        <section id="contact" style={{ padding: '8rem 0', maxWidth: '1000px', margin: '0 auto', padding: '0 2rem' }}>
-          <div className="glass-card" style={{ padding: '4rem', borderRadius: '40px', display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '4rem', alignItems: 'center' }}>
-            <div>
-              <h2 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '1.5rem' }}>Talk to an <span style={{ color: '#3b82f6' }}>Expert</span></h2>
-              <p style={{ color: '#94a3b8', lineHeight: 1.8, marginBottom: '2rem' }}>
-                Ready to transform your lead management? Leave your details and we'll show you a personalized AI demo.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: '#cbd5e1' }}>
-                  <Shield size={20} color="#10b981" /> Data Sovereignty Guaranteed
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', color: '#cbd5e1' }}>
-                  <Zap size={20} color="#f59e0b" /> 10-Minute Setup
-                </div>
-              </div>
-            </div>
-
-            <form onSubmit={handleInquirySubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-              <input 
-                placeholder="Work Email" 
-                type="email"
-                required
-                value={inquiryForm.email}
-                onChange={(e) => setInquiryForm({ ...inquiryForm, email: e.target.value })}
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', padding: '1.25rem', borderRadius: '12px', color: '#fff' }} 
-              />
-              <select 
-                value={inquiryForm.industry}
-                onChange={(e) => setInquiryForm({ ...inquiryForm, industry: e.target.value })}
-                style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', padding: '1.25rem', borderRadius: '12px', color: '#94a3b8' }}
-              >
-                <option value="Education">Education</option>
-                <option value="Real Estate">Real Estate</option>
-                <option value="Solar/SaaS">Solar/SaaS</option>
-              </select>
-              <Button type="submit" size="lg" loading={submitting} style={{ borderRadius: '12px' }}>Request Live Demo</Button>
-            </form>
-          </div>
-        </section>
-
-        {/* --- FINAL CTA --- */}
-        <section style={{ padding: '10rem 0', textAlign: 'center', position: 'relative' }}>
-          <h2 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 900, marginBottom: '2rem', letterSpacing: '-0.05em' }}>
-            Ready for High-Scale Growth?
+          <h2 style={{ fontSize: 'clamp(2rem, 6vw, 4.5rem)', fontWeight: 900, marginBottom: '2rem', letterSpacing: '-0.04em' }}>
+            Ready to break the scale?
           </h2>
-          <Link to="/signup">
-            <Button size="lg" style={{ padding: '1.5rem 5rem', fontSize: '1.3rem', borderRadius: '100px', boxShadow: '0 20px 40px -10px rgba(59, 130, 246, 0.4)' }}>
-              Deploy My Dashboard
-            </Button>
-          </Link>
-          <div style={{ marginTop: '2.5rem', display: 'flex', justifyContent: 'center', gap: '2rem', color: '#4b5563', fontWeight: 600 }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Users size={18} /> 5,000+ Leads Synced Today</div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Search size={18} /> Real-time Audit On</div>
-          </div>
-        </section>
-      </main>
+          <p style={{ fontSize: '1.25rem', color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto 3.5rem', fontWeight: 500 }}>
+            Join the elite teams using Dailsmart AI to dominate their markets. 
+            Calibrate your first agent in under 5 minutes.
+          </p>
+          <Button onClick={() => navigate('/signup')} className="btn-genz" style={{ padding: '1.5rem 3.5rem', fontSize: '1.25rem' }}>
+            Deploy Your First Agent <Smartphone size={24} />
+          </Button>
+        </div>
+      </section>
 
       {/* Footer */}
-      <footer style={{ 
-        padding: '6rem 8% 3rem', 
-        borderTop: '1px solid var(--border)', 
-        background: 'var(--panel-bg)',
-        color: 'var(--text-muted)'
-      }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4rem' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-main)', marginBottom: '1.5rem' }}>
-              <Bot size={28} color="var(--accent)" /> DialSmart<span style={{ color: 'var(--accent)' }}>.ai</span>
-            </div>
-            <p style={{ maxWidth: '350px', lineHeight: 1.8 }}>
-              Building the future of autonomous sales and support. 
-              The ultimate multi-tenant platform for agencies and institutions.
-            </p>
+
+      {/* Pricing Section */}
+      <section id="pricing" style={{ padding: '100px 5%', textAlign: 'center' }}>
+        <h2 className="hero-gradient-text" style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 900, marginBottom: '1rem' }}>
+          No Complex Math, Just High ROI 📈
+        </h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1.25rem', marginBottom: '4rem', fontWeight: 600 }}> Cheaper than market standards. Higher conversion than any rival agent.</p>
+        
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', maxWidth: '1200px', margin: '0 auto' }}>
+          <div className="premium-glass reveal-on-scroll" style={{ padding: '3rem', borderRadius: '40px', border: '1px solid rgba(255,255,255,0.05)' }}>
+            <h3 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '1rem' }}>Standard Node</h3>
+            <div style={{ fontSize: '0.9rem', color: 'var(--accent)', fontWeight: 800, marginBottom: '2rem', letterSpacing: '0.1em' }}>MOST AFFORDABLE ENTRY</div>
+            <ul style={{ listStyle: 'none', padding: 0, textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}><CheckCircle size={18} color="var(--accent)" /> Pure Neural Audio (Zero Latency)</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}><CheckCircle size={18} color="var(--accent)" /> Industry-Specific Dashboard</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}><CheckCircle size={18} color="var(--accent)" /> Real-time Lead IQ Analysis</li>
+            </ul>
+            <Button onClick={() => navigate('/signup')} className="btn-genz" fullWidth style={{ marginTop: '3rem' }}>Deploy Node Now</Button>
           </div>
-          
-          <div style={{ display: 'flex', gap: '5rem' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <span style={{ color: 'var(--text-main)', fontWeight: 700, marginBottom: '0.5rem' }}>Product</span>
-              <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Voice AI Engine</a>
-              <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Sheets Integration</a>
-              <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Compliance</a>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <span style={{ color: 'var(--text-main)', fontWeight: 700, marginBottom: '0.5rem' }}>Solutions</span>
-              <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>EdTech</a>
-              <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Real Estate</a>
-              <a href="#" style={{ color: 'inherit', textDecoration: 'none' }}>Solar/B2B</a>
-            </div>
+
+          <div className="premium-glass reveal-on-scroll" style={{ padding: '4rem 3rem', borderRadius: '40px', border: '2px solid var(--accent)', transform: 'scale(1.05)', position: 'relative' }}>
+            <div style={{ position: 'absolute', top: '-1.5rem', left: '50%', transform: 'translateX(-50%)', background: 'var(--accent)', color: 'white', padding: '0.5rem 1.5rem', borderRadius: '100px', fontSize: '0.8rem', fontWeight: 900 }}>ELITE BULK DEALS</div>
+            <h3 style={{ fontSize: '2rem', fontWeight: 900, marginBottom: '1rem' }}>Bulk / Political</h3>
+            <div style={{ fontSize: '1.1rem', color: 'var(--success)', fontWeight: 900, marginBottom: '2rem' }}>Cheapest Rates for Massive Scale</div>
+            <ul style={{ listStyle: 'none', padding: 0, textAlign: 'left', display: 'flex', flexDirection: 'column', gap: '1rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}><CheckCircle size={18} color="var(--success)" /> Millions of Minutes per Day</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}><CheckCircle size={18} color="var(--success)" /> Dedicated 24/7 Support Line</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}><CheckCircle size={18} color="var(--success)" /> Custom Feature Injections</li>
+              <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}><CheckCircle size={18} color="var(--success)" /> Lowest Talk Token Wholesale Price</li>
+            </ul>
+            <a href="tel:7989604033" style={{ textDecoration: 'none' }}>
+                <Button variant="secondary" fullWidth style={{ marginTop: '3rem', background: 'rgba(255,255,255,0.05)' }}>Call For Wholesale Rates</Button>
+            </a>
           </div>
         </div>
-        
-        <div style={{ marginTop: '6rem', paddingTop: '2.5rem', borderTop: '1px solid rgba(255,255,255,0.03)', textAlign: 'center', fontSize: '0.875rem' }}>
-          © {new Date().getFullYear()} DialSmart Global AI Automation. Built for Scale.
+      </section>
+
+      {/* Founders / Contact Section */}
+      <section style={{ padding: '120px 5%', background: 'rgba(2, 6, 23, 0.4)', textAlign: 'center' }}>
+        <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 900, marginBottom: '1.5rem' }}>Talk to the Founders 🛠️</h2>
+        <p style={{ color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto 4rem', fontSize: '1.2rem', fontWeight: 500 }}>
+          Direct technical access. No corporate gatekeeping.
+        </p>
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap' }}>
+          <div className="reveal-on-scroll" style={{ textAlign: 'center', padding: '2.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px solid var(--border)', width: '320px' }}>
+            <div style={{ width: '100px', height: '100px', background: 'var(--accent)', borderRadius: '30px', margin: '0 auto 2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Users size={50} color="white" />
+            </div>
+            <h4 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Dinesh</h4>
+            <p style={{ color: 'var(--accent)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1.5rem' }}>FOUNDER & TECH LEAD</p>
+            <a href="tel:7989604033" style={{ color: 'white', textDecoration: 'none', fontWeight: 900, fontSize: '1.4rem' }}>+91 7989604033</a>
+          </div>
+
+          <div className="reveal-on-scroll" style={{ textAlign: 'center', padding: '2.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px solid var(--border)', width: '320px' }}>
+            <div style={{ width: '100px', height: '100px', background: 'var(--accent-secondary)', borderRadius: '30px', margin: '0 auto 2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Users size={50} color="white" />
+            </div>
+            <h4 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Yatish</h4>
+            <p style={{ color: 'var(--accent-secondary)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1.5rem' }}>FOUNDER & STRATEGY</p>
+            <a href="tel:7989479005" style={{ color: 'white', textDecoration: 'none', fontWeight: 900, fontSize: '1.4rem' }}>+91 7989479005</a>
+          </div>
+        </div>
+      </section>
+
+      <footer style={{ padding: '100px 5% 50px', borderTop: '1px solid var(--border)', background: 'var(--panel-bg)' }}>
+        <div className="grid-4" style={{ marginBottom: '5rem' }}>
+          <div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem' }}>
+              <div style={{ width: '32px', height: '32px', background: 'var(--accent)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <Bot size={20} color="white" />
+              </div>
+              Dailsmart AI
+            </div>
+            <p style={{ color: 'var(--text-muted)', lineHeight: 1.6, fontWeight: 500 }}>Scaling human interaction beyond limits with neural orchestration.</p>
+          </div>
+          {['Product', 'Company', 'Security', 'Connect'].map(cat => (
+              <div key={cat}>
+                <h5 style={{ fontWeight: 900, marginBottom: '1.5rem', color: 'white' }}>{cat}</h5>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontWeight: 500, fontSize: '0.9rem' }}>Resource Core</a>
+                  <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontWeight: 500, fontSize: '0.9rem' }}>Network Status</a>
+                  <a href="#" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontWeight: 500, fontSize: '0.9rem' }}>Encryption Protocol</a>
+                </div>
+              </div>
+          ))}
+        </div>
+        <div style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 700, letterSpacing: '0.1em' }}>
+          © {new Date().getFullYear()} DAILSMART AI GLOBAL. BUILT BY DINESH & YATISH.
         </div>
       </footer>
-    </div>
-  );
-}
 
-// Components
-function WorkflowStep({ num, icon, title, desc }) {
-  return (
-    <div className="glass-card" style={{ padding: '2.5rem', borderRadius: '24px', position: 'relative' }}>
-      <div style={{ position: 'absolute', top: '-1rem', right: '1.5rem', fontSize: '5rem', fontWeight: 900, color: 'rgba(59, 130, 246, 0.05)', lineHeight: 1 }}>
-        {num}
-      </div>
-      <div style={{ padding: '0.75rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', width: 'fit-content', marginBottom: '1.5rem' }}>
-        {icon}
-      </div>
-      <h3 style={{ fontSize: '1.5rem', fontWeight: 700, marginBottom: '1rem' }}>{title}</h3>
-      <p style={{ color: 'var(--text-muted)', lineHeight: 1.6, margin: 0 }}>{desc}</p>
-    </div>
-  );
-}
 
-function TestimonialCard({ name, role, quote }) {
-  return (
-    <div className="glass-card" style={{ padding: '2.5rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      <Quote size={32} color="#3b82f6" opacity={0.3} />
-      <p style={{ fontSize: '1.125rem', lineHeight: 1.7, fontStyle: 'italic', margin: 0, color: '#e2e8f0' }}>"{quote}"</p>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginTop: 'auto' }}>
-        <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: '#1e293b' }} />
-        <div>
-          <div style={{ fontWeight: 700, color: '#fff' }}>{name}</div>
-          <div style={{ fontSize: '0.875rem', color: '#64748b' }}>{role}</div>
+      {/* Mobile Menu Overlay */}
+      <div className={`mobile-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
+        <button 
+          onClick={() => setIsMobileMenuOpen(false)}
+          style={{ position: 'absolute', top: '2rem', right: '2rem', background: 'transparent', border: 'none', color: 'white', cursor: 'pointer' }}
+        >
+          <X size={40} />
+        </button>
+        {['Features', 'Workflow', 'Results', 'Pricing'].map(item => (
+          <a key={item} href={`#${item.toLowerCase()}`} onClick={() => setIsMobileMenuOpen(false)} className="mobile-link">
+            {item}
+          </a>
+        ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '80%', marginTop: '2rem' }}>
+          <Link to="/login" onClick={() => setIsMobileMenuOpen(false)} style={{ textDecoration: 'none' }}>
+            <Button variant="secondary" fullWidth style={{ padding: '1.25rem', borderRadius: '16px' }}>Log In</Button>
+          </Link>
+          <Link to="/signup" onClick={() => setIsMobileMenuOpen(false)} style={{ textDecoration: 'none' }}>
+            <Button className="btn-genz" fullWidth style={{ padding: '1.25rem', borderRadius: '16px', justifyContent: 'center' }}>Get Started</Button>
+          </Link>
         </div>
       </div>
+
+      <style>{`
+        .nav-link-premium:hover { color: white !important; opacity: 1 !important; text-shadow: 0 0 10px rgba(59,130,246,0.5); transform: translateY(-1px); }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem; }
+        .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; }
+        @media (max-width: 1024px) {
+          .hide-mobile { display: none !important; }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }
 
-
-
-function FAQItem({ q, a }) {
+function FeatureCard({ icon, title, desc, color }) {
   return (
-    <div className="glass-card" style={{ padding: '2rem', borderRadius: '16px' }}>
-      <h3 style={{ fontSize: '1.125rem', fontWeight: 700, marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-        <HelpCircle size={20} color="#3b82f6" /> {q}
-      </h3>
-      <p style={{ color: '#94a3b8', lineHeight: 1.6, margin: 0 }}>{a}</p>
-    </div>
-  );
-}
-
-function ServiceCard({ icon, title, desc, stats }) {
-  return (
-    <div className="glass-card" style={{ padding: '2.5rem', borderRadius: '24px', display: 'flex', flexDirection: 'column', gap: '1.5rem', transition: 'transform 0.3s' }}>
-      <div style={{ width: '56px', height: '56px', background: 'rgba(255,255,255,0.03)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+    <div className="premium-glass reveal-on-scroll" style={{ 
+      padding: '3rem 2rem', 
+      borderRadius: '32px', 
+      transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+      cursor: 'pointer',
+      position: 'relative',
+      overflow: 'hidden'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-10px) scale(1.02)';
+      e.currentTarget.style.borderColor = color;
+      e.currentTarget.style.boxShadow = `0 20px 40px ${color}15`;
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0) scale(1)';
+      e.currentTarget.style.borderColor = 'var(--glass-border)';
+      e.currentTarget.style.boxShadow = 'none';
+    }}>
+      <div style={{ 
+        width: '64px', 
+        height: '64px', 
+        background: `${color}15`, 
+        borderRadius: '20px', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center', 
+        marginBottom: '1.5rem',
+        color: color,
+        boxShadow: `0 8px 16px ${color}20`
+      }}>
         {icon}
       </div>
-      <div>
-        <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '0.75rem', color: '#fff' }}>{title}</h3>
-        <p style={{ color: '#94a3b8', lineHeight: 1.6, fontSize: '1rem', margin: 0 }}>{desc}</p>
-      </div>
-      <div style={{ marginTop: 'auto', paddingTop: '1.5rem', borderTop: '1px solid rgba(255,255,255,0.05)', fontSize: '0.875rem', fontWeight: 700, color: '#3b82f6' }}>
-        🚀 {stats}
-      </div>
+      <h3 style={{ fontSize: '1.5rem', fontWeight: 900, marginBottom: '1rem' }}>{title}</h3>
+      <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.7, fontWeight: 500 }}>{desc}</p>
     </div>
   );
 }

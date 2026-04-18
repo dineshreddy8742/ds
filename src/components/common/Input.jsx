@@ -9,21 +9,24 @@ export const Input = ({
   placeholder,
   required = false,
   disabled = false,
+  className = '',
   style = {},
   ...props
 }) => {
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div style={{ marginBottom: '1.5rem' }}>
       {label && (
         <label style={{
           display: 'block',
-          marginBottom: '0.5rem',
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          color: '#a1a1aa',
+          marginBottom: '0.6rem',
+          fontSize: '0.8125rem',
+          fontWeight: 700,
+          color: 'var(--text-muted)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
         }}>
           {label}
-          {required && <span style={{ color: '#ef4444', marginLeft: '0.25rem' }}>*</span>}
+          {required && <span style={{ color: 'var(--danger)', marginLeft: '0.25rem' }}>*</span>}
         </label>
       )}
       <input
@@ -33,25 +36,16 @@ export const Input = ({
         placeholder={placeholder}
         required={required}
         disabled={disabled}
-        style={{
-          width: '100%',
-          padding: '0.75rem 1rem',
-          background: '#1e293b',
-          border: `1px solid ${error ? '#ef4444' : '#334155'}`,
-          borderRadius: '12px',
-          color: '#f8fafc',
-          fontSize: '1rem',
-          outline: 'none',
-          transition: 'border-color 0.2s',
-          ...style,
-        }}
+        className={`input-control ${className}`}
+        style={{ ...style }}
         {...props}
       />
       {error && (
         <p style={{
           marginTop: '0.5rem',
-          fontSize: '0.875rem',
-          color: '#ef4444',
+          fontSize: '0.8125rem',
+          color: 'var(--danger)',
+          fontWeight: 600
         }}>
           {error}
         </p>
@@ -69,19 +63,23 @@ export const Select = ({
   placeholder = 'Select an option',
   required = false,
   disabled = false,
+  className = '',
+  style = {},
 }) => {
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div style={{ marginBottom: '1.5rem' }}>
       {label && (
         <label style={{
           display: 'block',
-          marginBottom: '0.5rem',
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          color: '#a1a1aa',
+          marginBottom: '0.6rem',
+          fontSize: '0.8125rem',
+          fontWeight: 700,
+          color: 'var(--text-muted)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
         }}>
           {label}
-          {required && <span style={{ color: '#ef4444', marginLeft: '0.25rem' }}>*</span>}
+          {required && <span style={{ color: 'var(--danger)', marginLeft: '0.25rem' }}>*</span>}
         </label>
       )}
       <select
@@ -89,22 +87,12 @@ export const Select = ({
         onChange={onChange}
         required={required}
         disabled={disabled}
-        style={{
-          width: '100%',
-          padding: '0.75rem 1rem',
-          background: '#1e293b',
-          border: `1px solid ${error ? '#ef4444' : '#334155'}`,
-          borderRadius: '12px',
-          color: '#f8fafc',
-          fontSize: '1rem',
-          outline: 'none',
-          appearance: 'none',
-          cursor: 'pointer',
-        }}
+        className={`input-control ${className}`}
+        style={{ cursor: 'pointer', appearance: 'none', ...style }}
       >
-        <option value="">{placeholder}</option>
+        <option value="" style={{ background: 'var(--panel-bg)' }}>{placeholder}</option>
         {options.map((option, index) => (
-          <option key={index} value={option.value}>
+          <option key={index} value={option.value} style={{ background: 'var(--panel-bg)' }}>
             {option.label}
           </option>
         ))}
@@ -112,8 +100,9 @@ export const Select = ({
       {error && (
         <p style={{
           marginTop: '0.5rem',
-          fontSize: '0.875rem',
-          color: '#ef4444',
+          fontSize: '0.8125rem',
+          color: 'var(--danger)',
+          fontWeight: 600
         }}>
           {error}
         </p>
@@ -131,19 +120,23 @@ export const Textarea = ({
   rows = 4,
   required = false,
   disabled = false,
+  className = '',
+  style = {},
 }) => {
   return (
-    <div style={{ marginBottom: '1rem' }}>
+    <div style={{ marginBottom: '1.5rem' }}>
       {label && (
         <label style={{
           display: 'block',
-          marginBottom: '0.5rem',
-          fontSize: '0.875rem',
-          fontWeight: 500,
-          color: '#a1a1aa',
+          marginBottom: '0.6rem',
+          fontSize: '0.8125rem',
+          fontWeight: 700,
+          color: 'var(--text-muted)',
+          textTransform: 'uppercase',
+          letterSpacing: '0.05em'
         }}>
           {label}
-          {required && <span style={{ color: '#ef4444', marginLeft: '0.25rem' }}>*</span>}
+          {required && <span style={{ color: 'var(--danger)', marginLeft: '0.25rem' }}>*</span>}
         </label>
       )}
       <textarea
@@ -153,24 +146,15 @@ export const Textarea = ({
         rows={rows}
         required={required}
         disabled={disabled}
-        style={{
-          width: '100%',
-          padding: '0.75rem 1rem',
-          background: '#1e293b',
-          border: `1px solid ${error ? '#ef4444' : '#334155'}`,
-          borderRadius: '12px',
-          color: '#f8fafc',
-          fontSize: '1rem',
-          outline: 'none',
-          resize: 'vertical',
-          fontFamily: 'inherit',
-        }}
+        className={`input-control ${className}`}
+        style={{ resize: 'vertical', minHeight: '100px', ...style }}
       />
       {error && (
         <p style={{
           marginTop: '0.5rem',
-          fontSize: '0.875rem',
-          color: '#ef4444',
+          fontSize: '0.8125rem',
+          color: 'var(--danger)',
+          fontWeight: 600
         }}>
           {error}
         </p>

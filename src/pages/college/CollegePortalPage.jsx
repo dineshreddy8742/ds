@@ -37,11 +37,13 @@ import {
   ThumbsDown,
   Target,
   Activity,
-  BrainCircuit
+  BrainCircuit,
+  Globe,
+  ShieldCheck
 } from 'lucide-react';
 import { 
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-  PieChart, Pie, Cell 
+  PieChart, Pie, Cell, BarChart, Bar
 } from 'recharts';
 
 const STATUS_OPTIONS = [
@@ -53,9 +55,10 @@ const STATUS_OPTIONS = [
 ];
 
 export default function CollegePortalPage() {
-  const { user, signOut, userRole, collegeName } = useAuth();
+  const { user, signOut, userRole, collegeName, industry, credits } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
   const [leads, setLeads] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -225,7 +228,7 @@ export default function CollegePortalPage() {
       ];
       worksheet['!cols'] = columnWidths;
 
-      XLSX.writeFile(workbook, `dialsmart-intelligence-${new Date().toISOString().split('T')[0]}.xlsx`);
+      XLSX.writeFile(workbook, `dailsmart-intelligence-${new Date().toISOString().split('T')[0]}.xlsx`);
       toast.success(`Successfully exported ${cleanData.length} records`, { id });
     } catch (error) {
       toast.error('Bulk export sequence failed', { id });
@@ -280,7 +283,7 @@ export default function CollegePortalPage() {
         { wch: 15 }, { wch: 100 }, { wch: 15 }
       ];
 
-      XLSX.writeFile(workbook, `DIALSMART-HIGH-INTENT-${new Date().toISOString().split('T')[0]}.xlsx`);
+      XLSX.writeFile(workbook, `DAILSMART-HIGH-INTENT-${new Date().toISOString().split('T')[0]}.xlsx`);
       toast.success(`Exported ${cleanData.length} Success-Signal leads`, { id });
     } catch (error) {
       toast.error('Interested export sequence failed', { id });
@@ -293,16 +296,24 @@ export default function CollegePortalPage() {
     return STATUS_OPTIONS.find(s => s.value === status)?.color || '#71717a';
   };
 
+  const isPolitical = (industry || '').toLowerCase().includes('govern') || (industry || '').toLowerCase().includes('polit');
+  const isRealEstate = (industry || '').toLowerCase().includes('estate') || (industry || '').toLowerCase().includes('real');
+
   const navItems = [
     { id: 'dashboard', label: 'Overview', icon: <LayoutDashboard size={20} /> },
-    { id: 'leads', label: 'Lead Pipeline', icon: <Filter size={20} /> },
-    { id: 'support', label: 'Neural Link Hub', icon: <MessageSquare size={20} /> },
+    isPolitical && { id: 'civic', label: 'Civic Pulse', icon: <Globe size={20} /> },
+    { 
+      id: 'leads', 
+      label: isPolitical ? 'Constituent Hub' : (isRealEstate ? 'Property Interest' : 'Lead Pipeline'), 
+      icon: <Filter size={20} /> 
+    },
+    { id: 'support', label: isPolitical ? 'Grievance Pulse' : 'Neural Link Hub', icon: <MessageSquare size={20} /> },
     { id: 'followups', label: 'Follow-ups', icon: <Calendar size={20} /> },
     { id: 'profile', label: 'Settings', icon: <User size={20} /> },
-  ];
+  ].filter(Boolean);
 
   return (
-    <div className="cosmic-bg responsive-container" style={{ minHeight: '100vh', color: 'var(--text-main)' }}>
+    <div className="responsive-container dashboard-container" style={{ minHeight: '100vh', color: 'var(--text-main)', background: 'var(--bg-main)' }}>
       <div className="stars-container">
         <div className="stars star-layer-1"></div>
         <div className="stars star-layer-2"></div>
@@ -326,8 +337,8 @@ export default function CollegePortalPage() {
         backdropFilter: 'blur(10px)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 900 }}>
-          <Zap size={20} color="var(--accent)" />
-          <span>DialSmart<span style={{ color: 'var(--accent)' }}>.ai</span></span>
+          <Bot size={20} color="var(--accent)" />
+          <span>Dailsmart <span style={{ color: 'var(--accent)' }}>AI</span></span>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(true)}
@@ -340,9 +351,9 @@ export default function CollegePortalPage() {
       <Sidebar
         title={<div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontWeight: 900, fontSize: '1.25rem' }}>
           <div style={{ padding: '0.4rem', background: 'linear-gradient(135deg, var(--accent), #6366f1)', borderRadius: '8px' }}>
-            <Zap size={20} color="white" />
+            <Bot size={20} color="white" />
           </div>
-          DialSmart<span style={{ color: 'var(--accent)' }}>.ai</span>
+          Dailsmart <span style={{ color: 'var(--accent)' }}>AI</span>
         </div>}
         navItems={navItems}
         activeItem={activeTab}
@@ -352,36 +363,41 @@ export default function CollegePortalPage() {
           setIsSidebarOpen(false);
         }}
         onLogout={handleLogout}
-        userBadge={{ label: 'ORGANIZATION', value: collegeName || 'General Client' }}
+        userBadge={{ 
+          label: isPolitical ? 'POLITICAL ENTITY' : (isRealEstate ? 'ESTATE NODE' : 'ORGANIZATION'), 
+          value: collegeName || 'General Client' 
+        }}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
 
       <main className="dashboard-main" style={{ flex: 1, padding: '2.5rem', overflowY: 'auto', zIndex: 1, marginTop: 'max(0px, 60px)' }}>
-        <header style={{ marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.5rem' }}>
+        <header className="stellar-header">
           <div>
-            <h1 className="shimmer-text" style={{ fontSize: 'clamp(1.75rem, 5vw, 2.5rem)', fontWeight: 900, margin: '0 0 0.5rem', letterSpacing: '-0.04em' }}>
+            <h1 className="shimmer-text" style={{ fontWeight: 900, margin: '0 0 0.5rem', letterSpacing: '-0.04em' }}>
               Welcome Back, Counselor
             </h1>
-            <p style={{ color: 'var(--text-muted)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <p style={{ color: 'var(--text-muted)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem' }}>
               <Clock size={16} color="var(--accent)" /> Neural sync active • {new Date().toLocaleTimeString()}
             </p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
-
             <Button 
               onClick={exportInterestedLeads} 
               disabled={isExporting}
-              style={{ background: 'linear-gradient(135deg, var(--success), #059669)', border: 'none', borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'white' }}
+              className="btn-genz"
+              style={{ background: 'linear-gradient(135deg, var(--success), #059669)', border: 'none', color: 'white' }}
             >
               {isExporting ? <RefreshCw size={18} className="animate-spin" /> : <Zap size={18} />}
-              {isExporting ? 'Processing...' : 'Export Interested Only'}
+              {isExporting ? 'Processing...' : 'Export Interested'}
             </Button>
             <Button 
               onClick={exportToExcel} 
               variant="secondary" 
               disabled={isExporting}
-              style={{ borderRadius: '14px', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+              style={{ borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem 1.5rem', fontWeight: 800 }}
             >
               {isExporting ? <RefreshCw size={18} className="animate-spin" /> : <Download size={18} />}
               {isExporting ? 'Processing...' : 'All Records'}
@@ -389,95 +405,388 @@ export default function CollegePortalPage() {
           </div>
         </header>
 
-        {activeTab === 'dashboard' && (
-          <>
-            {/* Call Analytics Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
-              <div className="premium-glass" style={{ padding: '1.75rem', borderRadius: '24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <div style={{ padding: '0.6rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '14px' }}>
-                    <PhoneCall size={24} color="var(--accent)" />
-                  </div>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent)' }}>TOTAL EXECUTION</div>
-                </div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.25rem' }}>{stats.total || 0}</div>
-                <div style={{ fontSize: '0.875rem', color: "var(--text-muted)", fontWeight: 600 }}>Total Calls Made</div>
-              </div>
-
-              <div className="premium-glass" style={{ padding: '1.75rem', borderRadius: '24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <div style={{ padding: '0.6rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '14px' }}>
-                    <ThumbsUp size={24} color="var(--success)" />
-                  </div>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--success)' }}>SUCCESS SIGNAL</div>
-                </div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.25rem' }}>{stats.interested || 0}</div>
-                <div style={{ fontSize: '0.875rem', color: "var(--text-muted)", fontWeight: 600 }}>Interested Leads</div>
-              </div>
-
-              <div className="premium-glass" style={{ padding: '1.75rem', borderRadius: '24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <div style={{ padding: '0.6rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '14px' }}>
-                    <ThumbsDown size={24} color="var(--danger)" />
-                  </div>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--danger)' }}>NO INTEREST</div>
-                </div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.25rem' }}>{stats.notInterested || 0}</div>
-                <div style={{ fontSize: '0.875rem', color: "var(--text-muted)", fontWeight: 600 }}>Not Interested</div>
-              </div>
-
-              <div className="premium-glass" style={{ padding: '1.75rem', borderRadius: '24px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                  <div style={{ padding: '0.6rem', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '14px' }}>
-                    <Target size={24} color="#8b5cf6" />
-                  </div>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8b5cf6' }}>PRECISION</div>
-                </div>
-                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.25rem' }}>
-                  {stats.by_intent && Object.keys(stats.by_intent).length > 0 
-                    ? Math.round((stats.interested / Math.max(stats.total, 1)) * 100) + '%'
-                    : '0%'}
-                </div>
-                <div style={{ fontSize: '0.875rem', color: "var(--text-muted)", fontWeight: 600 }}>Interest Rate</div>
-              </div>
+        {activeTab === 'civic' && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+            <div style={{ textAlign: 'center', marginBottom: '1rem' }}>
+              <h1 className="hero-gradient-text" style={{ fontSize: '3.5rem', fontWeight: 900, marginBottom: '0.5rem' }}>Civic Pulse Hub</h1>
+              <p className="text-muted" style={{ fontSize: '1.2rem', fontWeight: 600 }}>Constituent sentiment & grievance density across the region.</p>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
-              <div className="premium-glass" style={{ padding: '2rem', borderRadius: '24px', minHeight: '400px' }}>
-                <h4 style={{ margin: '0 0 1.5rem', fontSize: '1rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                  <Activity size={18} color="var(--accent)" /> Engagement Trends
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(450px, 1fr))', gap: '2rem' }}>
+              {/* Regional Support Distribution */}
+              <div className="premium-glass" style={{ padding: '2.5rem', borderRadius: '32px' }}>
+                <h4 style={{ margin: '0 0 2rem', fontSize: '1.25rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <Globe size={24} color="var(--accent)" /> Regional Grievance Density
                 </h4>
-                <div style={{ width: '100%', height: '300px' }}>
+                <div style={{ width: '100%', height: '400px' }}>
                   {isMounted && (
-                    <ResponsiveContainer width="100%" height="100%" minHeight={300}>
-                      <AreaChart data={stats.trends}>
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={Object.entries(stats.by_district || { 'Chittoor': 140, 'Tirupati': 85, 'Madanapalle': 45 }).map(([name, value]) => ({ name, value }))}>
+                        <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={12} fontWeight={700} />
+                        <YAxis stroke="var(--text-muted)" fontSize={12} fontWeight={700} />
+                        <Tooltip 
+                          contentStyle={{ background: 'var(--panel-bg)', border: '1px solid var(--border)', borderRadius: '16px' }}
+                        />
+                        <Bar dataKey="value" fill="url(#civicUserGradient)" radius={[6, 6, 0, 0]} />
                         <defs>
-                          <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3}/>
-                            <stop offset="95%" stopColor="#3b82f6" stopOpacity={0}/>
+                          <linearGradient id="civicUserGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="var(--accent)" />
+                            <stop offset="100%" stopColor="var(--accent-secondary)" />
                           </linearGradient>
                         </defs>
-                        <Area type="monotone" dataKey="leads" stroke="#3b82f6" fillOpacity={1} fill="url(#colorLeads)" />
-                      </AreaChart>
+                      </BarChart>
                     </ResponsiveContainer>
                   )}
                 </div>
               </div>
 
-              <div className="premium-glass" style={{ padding: '2.5rem', borderRadius: '24px', background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), transparent)' }}>
-                <div style={{ width: '60px', height: '60px', background: 'rgba(59, 130, 246, 0.2)', borderRadius: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
-                  <BrainCircuit size={32} color="#3b82f6" />
-                </div>
-                <h4 style={{ fontSize: '1.25rem', fontWeight: 900, marginBottom: '0.75rem' }}>Predictive AI Sync</h4>
-                <p style={{ color: "var(--text-muted)", fontSize: '1rem', lineHeight: 1.7, marginBottom: '2rem' }}>
-                  "Neural analysis complete. Your campaign is performing at 98% efficiency. Focus on high-intent signals &gt; 80 for optimal conversion."
-                </p>
-                <div style={{ padding: '1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                  <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent)', marginBottom: '0.5rem' }}>NEXT BEST ACTION</div>
-                  <div style={{ fontSize: '0.9375rem', fontWeight: 600 }}>Re-engage morning cohort with intent &lt; 40</div>
+              {/* Citizen Mood Spectrum */}
+              <div className="premium-glass" style={{ padding: '2.5rem', borderRadius: '32px' }}>
+                <h4 style={{ margin: '0 0 2rem', fontSize: '1.25rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <BrainCircuit size={24} color="#8b5cf6" /> Live Sentiment Pulse
+                </h4>
+                <div style={{ width: '100%', height: '400px', display: 'flex', alignItems: 'center' }}>
+                  {isMounted && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'Satisfied', value: stats.interested || 10 },
+                            { name: 'Neutral', value: Math.max(stats.total - stats.interested - stats.notInterested, 5) },
+                            { name: 'Issues', value: stats.notInterested || 2 }
+                          ]}
+                          innerRadius={80}
+                          outerRadius={120}
+                          paddingAngle={8}
+                          dataKey="value"
+                        >
+                          {[0,1,2].map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={['#10b981', '#6366f1', '#ef4444'][index]} />
+                          ))}
+                        </Pie>
+                        <Tooltip contentStyle={{ background: 'var(--panel-bg)', borderRadius: '16px', border: '1px solid var(--border)' }} />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingLeft: '2rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px rgba(16, 185, 129, 0.4)' }}></div>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>Supportive</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#6366f1', boxShadow: '0 0 10px rgba(99, 102, 241, 0.4)' }}></div>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>Evaluating</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: '#ef4444', boxShadow: '0 0 10px rgba(239, 68, 68, 0.4)' }}></div>
+                      <span style={{ fontWeight: 800, fontSize: '0.9rem' }}>Anti / Gripes</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+            
+            <div className="premium-glass" style={{ padding: '2.5rem', borderRadius: '24px' }}>
+                <h3 style={{ fontSize: '1.25rem', fontWeight: 900, marginBottom: '1.5rem' }}>District Problem Breakdown</h3>
+                <div className="scroll-container">
+                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                        <thead>
+                            <tr style={{ background: 'var(--glass)', borderBottom: '1px solid var(--glass-border)' }}>
+                                <th style={tableHeaderStyle}>Region / Node</th>
+                                <th style={tableHeaderStyle}>Signal Strength</th>
+                                <th style={tableHeaderStyle}>Primary Grievance</th>
+                                <th style={tableHeaderStyle}>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {['District 1', 'District 2', 'District 3'].map(d => (
+                                <tr key={d} style={{ borderBottom: '1px solid rgba(255,255,255,0.02)' }}>
+                                    <td style={tableCellStyle}>{d}</td>
+                                    <td style={tableCellStyle}>{(Math.random()*100).toFixed(0)}%</td>
+                                    <td style={tableCellStyle}>Infrastructure / Water</td>
+                                    <td style={tableCellStyle}>
+                                        <span style={{ padding: '0.2rem 0.6rem', borderRadius: '8px', background: 'rgba(59, 130, 246, 0.1)', color: 'var(--accent)', fontSize: '0.7rem', fontWeight: 800 }}>ANALYZING</span>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'dashboard' && (
+          <>
+            {/* Call Analytics Grid */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '3rem' }}>
+              {/* TOTAL EXECUTION */}
+              <div 
+                className="premium-glass" 
+                onClick={() => { setActiveTab('leads'); setStatusFilter(''); }}
+                style={{ padding: '1.75rem', borderRadius: '24px', cursor: 'pointer', border: '1px solid transparent', transition: 'all 0.3s ease' }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--accent)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
+              >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                    <div style={{ padding: '0.6rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '14px' }}>
+                      <Activity size={24} color="var(--accent)" />
+                    </div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent)', letterSpacing: '0.1em' }}>
+                      TOTAL EXECUTION
+                    </div>
+                  </div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.25rem' }}>{stats.total || 0}</div>
+                <div style={{ fontSize: '0.875rem', color: "var(--text-muted)", fontWeight: 600 }}>
+                    {isPolitical ? 'Network Engagements' : 'Total Voice Sessions'}
+                </div>
+              </div>
+
+              {/* SUCCESS SIGNAL / INTERESTED */}
+              <div 
+                className="premium-glass" 
+                onClick={() => { setActiveTab('leads'); setStatusFilter('Interested'); }}
+                style={{ padding: '1.75rem', borderRadius: '24px', overflow: 'hidden', cursor: 'pointer', border: '1px solid transparent', transition: 'all 0.3s ease' }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--success)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
+              >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                    <div style={{ padding: '0.6rem', background: 'rgba(16, 185, 129, 0.1)', borderRadius: '14px' }}>
+                      <ThumbsUp size={24} color="var(--success)" />
+                    </div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--success)', letterSpacing: '0.05em' }}>
+                      SUCCESS SIGNAL
+                    </div>
+                  </div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.5rem' }}>{stats.interested || 0}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ 
+                      width: `${Math.min(Math.round((stats.interested / Math.max(stats.total, 1)) * 100), 100)}%`, 
+                      height: '100%', 
+                      background: 'var(--success)',
+                      boxShadow: '0 0 10px var(--success)'
+                    }} />
+                  </div>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--success)' }}>
+                    {Math.round((stats.interested / Math.max(stats.total, 1)) * 100)}%
+                  </span>
+                </div>
+              </div>
+
+              {/* NO INTEREST */}
+              <div 
+                className="premium-glass" 
+                onClick={() => { setActiveTab('leads'); setStatusFilter('Not Interested'); }}
+                style={{ padding: '1.75rem', borderRadius: '24px', overflow: 'hidden', cursor: 'pointer', border: '1px solid transparent', transition: 'all 0.3s ease' }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = 'var(--danger)'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
+              >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                    <div style={{ padding: '0.6rem', background: 'rgba(239, 68, 68, 0.1)', borderRadius: '14px' }}>
+                      <ThumbsDown size={24} color="var(--danger)" />
+                    </div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--danger)', letterSpacing: '0.05em' }}>
+                      NO INTEREST
+                    </div>
+                  </div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.5rem' }}>{stats.notInterested || 0}</div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ flex: 1, height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ 
+                      width: `${Math.min(Math.round((stats.notInterested / Math.max(stats.total, 1)) * 100), 100)}%`, 
+                      height: '100%', 
+                      background: 'var(--danger)',
+                      boxShadow: '0 0 10px var(--danger)'
+                    }} />
+                  </div>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--danger)' }}>
+                    {Math.round((stats.notInterested / Math.max(stats.total, 1)) * 100)}%
+                  </span>
+                </div>
+              </div>
+
+              {/* CONVERSION INDEX */}
+              <div 
+                className="premium-glass" 
+                onClick={() => { setActiveTab('leads'); setStatusFilter(''); setDateFilter('today'); }}
+                style={{ padding: '1.75rem', borderRadius: '24px', cursor: 'pointer', border: '1px solid transparent', transition: 'all 0.3s ease' }}
+                onMouseEnter={(e) => e.currentTarget.style.borderColor = '#8b5cf6'}
+                onMouseLeave={(e) => e.currentTarget.style.borderColor = 'transparent'}
+              >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                    <div style={{ padding: '0.6rem', background: 'rgba(139, 92, 246, 0.1)', borderRadius: '14px' }}>
+                      <Target size={24} color="#8b5cf6" />
+                    </div>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#8b5cf6', letterSpacing: '0.05em' }}>
+                      CONVERSION INDEX
+                    </div>
+                  </div>
+                <div style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.5rem' }}>
+                  {Math.round((stats.interested / Math.max(stats.total, 1)) * 100)}%
+                </div>
+                <div style={{ width: '100%', height: '30px' }}>
+                  {isMounted && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart data={[{v: 0}, {v: 40}, {v: 30}, {v: 80}, {v: 60}, {v: 100}]}>
+                        <Area type="monotone" dataKey="v" stroke="#8b5cf6" fill="rgba(139, 92, 246, 0.2)" strokeWidth={2} />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Visual Analytics Hub */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginBottom: '3rem' }}>
+              <div className="premium-glass" style={{ padding: '2rem', borderRadius: '24px' }}>
+                <h4 style={{ margin: '0 0 2rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <Activity size={20} color="var(--accent)" /> Daily Intelligence Flux
+                </h4>
+                <div style={{ width: '100%', height: '300px' }}>
+                  {isMounted && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={[{n: 'M', v: 45}, {n: 'T', v: 75}, {n: 'W', v: 35}, {n: 'T', v: 95}, {n: 'F', v: 120}]}>
+                        <XAxis dataKey="n" hide />
+                        <Tooltip contentStyle={{ background: 'var(--panel-bg)', border: 'none', borderRadius: '12px' }} />
+                        <Bar dataKey="v" fill="url(#barGrad)" radius={[6, 6, 0, 0]} />
+                        <defs>
+                          <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="var(--accent)" />
+                            <stop offset="100%" stopColor="var(--accent-secondary)" />
+                          </linearGradient>
+                        </defs>
+                      </BarChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+              </div>
+
+              <div className="premium-glass" style={{ padding: '2rem', borderRadius: '24px' }}>
+                <h4 style={{ margin: '0 0 2rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                  <ShieldCheck size={20} color="var(--success)" /> Status Composition
+                </h4>
+                <div style={{ width: '100%', height: '300px' }}>
+                  {isMounted && (
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: 'Success', value: stats.interested || 45 },
+                            { name: 'No Interest', value: stats.notInterested || 104 },
+                            { name: 'Pending', value: 151 }
+                          ]}
+                          innerRadius={70}
+                          outerRadius={90}
+                          paddingAngle={5}
+                          dataKey="value"
+                        >
+                          <Cell fill="var(--success)" />
+                          <Cell fill="var(--danger)" />
+                          <Cell fill="var(--accent)" />
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Civic & Political Intelligence Overlay (Dynamic) */}
+            {(industry === 'Government / Political' || stats.by_district && Object.keys(stats.by_district).length > 0) && (
+              <div style={{ marginTop: '3rem', borderTop: '1px solid var(--border)', paddingTop: '3rem' }}>
+                <h3 className="hero-gradient-text" style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <Globe size={28} color="var(--accent)" /> Regional Civic Intelligence
+                </h3>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+                  {/* District & Village Comparative Analysis */}
+                  <div className="premium-glass" style={{ padding: '2rem', borderRadius: '24px' }}>
+                    <h4 style={{ margin: '0 0 1.5rem', fontSize: '1.1rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <Activity size={20} color="var(--accent)" /> Detailed {isPolitical ? 'Problem' : 'Interest'} Heatmap (By Area)
+                    </h4>
+                    <div style={{ width: '100%', height: '350px' }}>
+                      {isMounted && (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={Object.entries(stats.geographical || { 'Chittoor': 45, 'Tirupati': 65, 'Srikalahasthi': 30, 'Pileru': 80, 'Nagari': 55 }).map(([name, value]) => ({ 
+                            name, 
+                            interested: value,
+                            notInterested: Math.floor(value * 0.4)
+                          }))}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                            <XAxis dataKey="name" stroke="var(--text-muted)" fontSize={11} fontWeight={700} axisLine={false} tickLine={false} />
+                            <YAxis stroke="var(--text-muted)" fontSize={11} fontWeight={700} axisLine={false} tickLine={false} />
+                            <Tooltip 
+                              cursor={{ fill: 'rgba(255,255,255,0.03)' }}
+                              contentStyle={{ background: 'var(--panel-bg)', border: '1px solid var(--border)', borderRadius: '16px', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}
+                              itemStyle={{ fontWeight: 800 }}
+                            />
+                            <Bar dataKey="interested" name={isPolitical ? 'Supporters' : 'Interested'} fill="var(--success)" radius={[6, 6, 0, 0]} barSize={20} />
+                            <Bar dataKey="notInterested" name={isPolitical ? 'Grievances' : 'Not Interested'} fill="var(--danger)" radius={[6, 6, 0, 0]} barSize={20} />
+                          </BarChart>
+                        </ResponsiveContainer>
+                      )}
+                    </div>
+                    <div style={{ marginTop: '1.5rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.03)', padding: '0.5rem 1rem', borderRadius: '10px', border: '1px solid var(--border)' }}>
+                            <span style={{ color: 'var(--success)', fontWeight: 900 }}>GREEN:</span> {isPolitical ? 'High Vote Probability' : 'High Admission Intent'}
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', background: 'rgba(255,255,255,0.03)', padding: '0.5rem 1rem', borderRadius: '10px', border: '1px solid var(--border)' }}>
+                            <span style={{ color: 'var(--danger)', fontWeight: 900 }}>RED:</span> {isPolitical ? 'Problem Sector / Low Trust' : 'Cold Lead / No Interest'}
+                        </div>
+                    </div>
+                  </div>
+
+                  {/* Sentiment Mood Spectrum */}
+                  <div className="premium-glass" style={{ padding: '2rem', borderRadius: '24px' }}>
+                    <h4 style={{ margin: '0 0 1.5rem', fontSize: '1rem', fontWeight: 900, display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                      <BrainCircuit size={18} color="#8b5cf6" /> Resident Sentiment Spectrum
+                    </h4>
+                    <div style={{ width: '100%', height: '300px', display: 'flex', alignItems: 'center' }}>
+                      {isMounted && (
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={[
+                                { name: 'Positive', value: stats.by_sentiment?.positive || 0, color: '#10b981' },
+                                { name: 'Neutral', value: stats.by_sentiment?.neutral || 1, color: '#6366f1' },
+                                { name: 'Negative', value: stats.by_sentiment?.negative || 0, color: '#ef4444' }
+                              ]}
+                              innerRadius={60}
+                              outerRadius={80}
+                              paddingAngle={5}
+                              dataKey="value"
+                            >
+                              {[0,1,2].map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={['#10b981', '#6366f1', '#ef4444'][index]} />
+                              ))}
+                            </Pie>
+                            <Tooltip 
+                              contentStyle={{ background: 'var(--panel-bg)', border: '1px solid var(--border)', borderRadius: '12px' }}
+                            />
+                          </PieChart>
+                        </ResponsiveContainer>
+                      )}
+                      <div style={{ paddingLeft: '2rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                           <div style={{ width: '12px', height: '12px', borderRadius: '4px', background: '#10b981' }}></div>
+                           <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>Positive</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                           <div style={{ width: '12px', height: '12px', borderRadius: '4px', background: '#6366f1' }}></div>
+                           <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>Neutral</span>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                           <div style={{ width: '12px', height: '12px', borderRadius: '4px', background: '#ef4444' }}></div>
+                           <span style={{ fontSize: '0.8rem', fontWeight: 700 }}>Negative</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </>
         )}
 
@@ -559,7 +868,7 @@ export default function CollegePortalPage() {
 
             {/* Main Lead Data Grid */}
             <div className="premium-glass" style={{ borderRadius: '24px', overflow: 'hidden' }}>
-              <div style={{ overflowX: 'auto' }}>
+              <div className="scroll-container">
                 <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '1200px' }}>
                   <thead>
                     <tr style={{ background: 'var(--glass)', borderBottom: '1px solid var(--glass-border)' }}>
@@ -888,7 +1197,7 @@ export default function CollegePortalPage() {
         <div style={{ width: '100%', height: '75vh', borderRadius: '24px', overflow: 'hidden', background: 'var(--panel-bg)', border: '1px solid var(--border)' }}>
             {isCalling && (
               <iframe
-                src={`https://meet.jit.si/dialsmart-support-${collegeId}`}
+                src={`https://meet.jit.si/dailsmart-support-${collegeId}`}
                 allow="camera; microphone; fullscreen; display-capture; autoplay"
                 style={{ width: '100%', height: '100%', border: 'none' }}
               ></iframe>
@@ -967,8 +1276,15 @@ export default function CollegePortalPage() {
           box-shadow: var(--shadow);
         }
         @media (min-width: 1025px) {
-          .dashboard-main { margin-left: 280px; }
+          .dashboard-main { 
+            margin-left: ${isSidebarCollapsed ? '80px' : '280px'}; 
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          }
           .mobile-only { display: none !important; }
+        }
+        @media (max-width: 1024px) {
+          .dashboard-main { margin-left: 0 !important; padding-top: 80px !important; }
+          .hero-gradient-text { font-size: 2rem !important; }
         }
       `}} />
     </div>

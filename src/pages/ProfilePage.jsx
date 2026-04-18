@@ -23,13 +23,15 @@ import {
   RefreshCw,
   Save,
   UserCheck,
-  Menu
+  Menu,
+  Bot
 } from 'lucide-react';
 
 export default function ProfilePage() {
   const { user, userRole, collegeName, signOut, updatePassword } = useAuth();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [newPassword, setNewPassword] = useState('');
@@ -93,7 +95,7 @@ export default function ProfilePage() {
   ];
 
   return (
-    <div className="cosmic-bg responsive-container" style={{ minHeight: '100vh', color: 'var(--text-main)' }}>
+    <div className="cosmic-bg responsive-container dashboard-container" style={{ minHeight: '100vh', color: 'var(--text-main)', background: 'var(--bg-main)' }}>
       <div className="stars-container">
         <div className="stars star-layer-1"></div>
         <div className="stars star-layer-2"></div>
@@ -117,8 +119,8 @@ export default function ProfilePage() {
         backdropFilter: 'blur(10px)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 900 }}>
-          <User size={20} color="var(--accent)" />
-          <span>Profile<span style={{ color: 'var(--accent)' }}>.ai</span></span>
+          <Bot size={20} color="var(--accent)" />
+          <span>Profile <span style={{ color: 'var(--accent)' }}>AI</span></span>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(true)}
@@ -131,9 +133,9 @@ export default function ProfilePage() {
       <Sidebar
         title={<div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontWeight: 900, fontSize: '1.25rem' }}>
           <div style={{ padding: '0.4rem', background: 'linear-gradient(135deg, var(--accent), #6366f1)', borderRadius: '8px' }}>
-            <Zap size={20} color="white" />
+            <Bot size={20} color="white" />
           </div>
-          DialSmart<span style={{ color: 'var(--accent)' }}>.ai</span>
+          Dailsmart <span style={{ color: 'var(--accent)' }}>AI</span>
         </div>}
         navItems={navItems}
         activeItem="profile"
@@ -145,9 +147,11 @@ export default function ProfilePage() {
         userBadge={{ label: 'SYSTEM ACCESS', value: userRole }}
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
+        isCollapsed={isSidebarCollapsed}
+        onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
       />
 
-      <main style={{ flex: 1, padding: '2.5rem', overflowY: 'auto', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'max(0px, 60px)' }}>
+      <main className="dashboard-main" style={{ flex: 1, padding: '2.5rem', overflowY: 'auto', zIndex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 'max(0px, 60px)' }}>
         <div style={{ width: '100%', maxWidth: '900px' }}>
           <header style={{ marginBottom: '3.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem' }}>
             <div>
@@ -291,6 +295,18 @@ export default function ProfilePage() {
           </div>
         </form>
       </Modal>
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media (min-width: 1025px) {
+          .dashboard-main { 
+            margin-left: ${isSidebarCollapsed ? '80px' : '280px'}; 
+            transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+          }
+          .mobile-only { display: none !important; }
+        }
+        @media (max-width: 1024px) {
+          .dashboard-main { margin-left: 0 !important; padding-top: 80px !important; }
+        }
+      `}} />
     </div>
   );
 }

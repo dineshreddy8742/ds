@@ -3,14 +3,27 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { Button } from '../../components/common/Button';
-import { Bot, ShieldCheck, Mail, Lock, ArrowRight, Zap } from 'lucide-react';
+import { StarField } from '../../components/common/StarField';
+import { Bot, Mail, Lock, ArrowRight, Zap, ShieldCheck, Sparkles, Building2, ChevronDown } from 'lucide-react';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [sector, setSector] = useState('Education');
   const { signIn } = useAuth();
   const navigate = useNavigate();
+
+  const industries = [
+    'Education',
+    'Real Estate',
+    'Political / Government',
+    'Solar / Energy',
+    'B2B Lead Generation',
+    'Health & Wellness',
+    'E-commerce',
+    'Other'
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -28,146 +41,169 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="cosmic-bg responsive-container" style={{
-      minHeight: '100vh',
-      color: 'var(--text-main)',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
-    }}>
-
-      {/* --- Cosmic Layers --- */}
-      <div className="stars-container">
-        <div className="stars star-layer-1" />
-        <div className="stars star-layer-2" />
-        <div className="stars star-layer-3" />
+    <div className="login-wrapper" style={{ minHeight: '100vh', display: 'flex', position: 'relative', overflow: 'hidden' }}>
+      {/* Gen Z Background Layers */}
+      <div className="cosmic-layer">
+        <StarField />
+        <div className="glow-mesh"></div>
       </div>
-      <div className="nebula-glow" />
-
-      {/* --- Cosmic Backdrops --- */}
-      <div className="glow-orb" style={{ top: '10%', left: '10%', width: '500px', height: '500px', background: 'radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, transparent 70%)' }} />
-      <div className="glow-orb" style={{ bottom: '10%', right: '10%', width: '450px', height: '450px', background: 'radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%)', animationDelay: '-7s' }} />
-
-      {/* --- Left Side: Branding & Visuals --- */}
+      
+      {/* Left Side: Branding */}
       <div className="hide-mobile" style={{
-        flex: 1.1,
-        background: 'var(--panel-bg)',
-        backdropFilter: 'blur(30px)',
+        flex: 1.2,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         padding: '6rem',
-        position: 'relative',
-        borderRight: '1px solid var(--border)'
+        background: 'rgba(2, 6, 23, 0.4)',
+        backdropFilter: 'blur(60px)',
+        borderRight: '1px solid var(--border)',
+        zIndex: 1
       }}>
-        <div style={{ position: 'relative', zIndex: 1 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '1.75rem', fontWeight: 900, marginBottom: '4rem' }}>
-            <div style={{ width: '42px', height: '42px', background: 'linear-gradient(135deg, var(--accent), #6366f1)', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 16px rgba(59, 130, 246, 0.3)' }}>
-              <Bot size={24} color="white" />
-            </div>
-            DialSmart<span style={{ color: 'var(--accent)' }}>.ai</span>
+        <div className="logo" style={{ marginBottom: '4rem', fontSize: '1.75rem' }}>
+          <div className="logo-icon" style={{ 
+            width: '56px', 
+            height: '56px', 
+            background: sector === 'Political / Government' ? 'linear-gradient(135deg, #6366f1, #a855f7)' : (sector === 'Real Estate' ? 'linear-gradient(135deg, #10b981, #3b82f6)' : (sector === 'Solar / Energy' ? 'linear-gradient(135deg, #f59e0b, #ef4444)' : 'linear-gradient(135deg, var(--accent), var(--accent-secondary))')),
+            boxShadow: 'var(--glow-pink)',
+            transition: 'all 0.5s ease'
+          }}>
+            <Bot size={32} color="white" />
           </div>
-
-          <h2 className="shimmer-text" style={{ fontSize: '3.5rem', fontWeight: 900, lineHeight: 1.1, marginBottom: '2rem', letterSpacing: '-0.04em' }}>
-            Access Your<br />
-            Command Center.
-          </h2>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', maxWidth: '400px' }}>
-            <div style={{ display: 'flex', gap: '1.25rem' }}>
-              <div style={{ padding: '0.75rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '12px', height: 'fit-content' }}>
-                <ShieldCheck size={24} color="#3b82f6" />
-              </div>
-              <div>
-                <h4 style={{ margin: '0 0 0.25rem', fontSize: '1.125rem', fontWeight: 700 }}>Universal Node Protocol</h4>
-                <p style={{ margin: 0, color: '#64748b', lineHeight: 1.5, fontSize: '0.9375rem' }}>Secure access to your industry-specific AI lead processing nodes.</p>
-              </div>
-            </div>
-            <div style={{ display: 'flex', gap: '1.25rem' }}>
-              <div style={{ padding: '0.75rem', background: 'var(--accent-glow)', borderRadius: '12px', height: 'fit-content' }}>
-                <Zap size={24} color="var(--accent)" />
-              </div>
-              <div>
-                <h4 style={{ margin: '0 0 0.25rem', fontSize: '1.125rem', fontWeight: 700 }}>Real-time Intelligence</h4>
-                <p style={{ margin: 0, color: 'var(--text-muted)', lineHeight: 1.5, fontSize: '0.9375rem' }}>Monitor global call intent and performance across all business sectors.</p>
-              </div>
-            </div>
-          </div>
+          <span style={{ fontWeight: 900 }}>Dailsmart <span className="hero-gradient-text" style={{ WebkitTextFillColor: 'unset' }}>AI</span></span>
         </div>
 
-        <div style={{ marginTop: 'auto', paddingTop: '4rem', color: '#475569', fontSize: '0.875rem', fontWeight: 500 }}>
-          © {new Date().getFullYear()} DialSmart Global AI Automation.
+        <h2 className="hero-gradient-text" style={{ fontSize: '4.5rem', fontWeight: 900, lineHeight: 1, marginBottom: '2.5rem', letterSpacing: '-0.06em' }}>
+          Welcome back<br />
+          to the future.
+        </h2>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', maxWidth: '450px' }}>
+          <div className="reveal-on-scroll visible" style={{ display: 'flex', gap: '1.5rem', animation: 'fadeInLeft 0.8s ease-out' }}>
+            <div style={{ padding: '0.8rem', background: 'rgba(255, 0, 127, 0.1)', borderRadius: '16px', height: 'fit-content', border: '1px solid var(--accent)' }}>
+              <ShieldCheck size={28} color="var(--accent)" />
+            </div>
+            <div>
+              <h4 style={{ margin: '0 0 0.4rem', fontSize: '1.2rem', fontWeight: 800 }}>Neural Security</h4>
+              <p className="text-muted" style={{ fontSize: '0.95rem', fontWeight: 500 }}>Enterprise-grade encryption for your institutional operations.</p>
+            </div>
+          </div>
+          <div className="reveal-on-scroll visible" style={{ display: 'flex', gap: '1.5rem', animation: 'fadeInLeft 1s ease-out' }}>
+            <div style={{ padding: '0.8rem', background: 'rgba(0, 255, 136, 0.1)', borderRadius: '16px', height: 'fit-content', border: '1px solid #00ff88' }}>
+              <Sparkles size={28} color="#00ff88" />
+            </div>
+            <div>
+              <h4 style={{ margin: '0 0 0.4rem', fontSize: '1.2rem', fontWeight: 800 }}>Stunning Efficiency</h4>
+              <p className="text-muted" style={{ fontSize: '0.95rem', fontWeight: 500 }}>Your AI agents have been working while you were away.</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* --- Right Side: Login Form --- */}
-      <div style={{
-        flex: 1,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2rem',
-        zIndex: 2
-      }}>
-        <div className="premium-glass" style={{ width: '100%', maxWidth: '440px', padding: '3.5rem', borderRadius: '32px' }}>
-          <div style={{ marginBottom: '3rem' }}>
-            <h1 style={{ fontSize: '2.25rem', fontWeight: 900, marginBottom: '0.75rem', letterSpacing: '-0.03em' }}>Sign In</h1>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1rem', fontWeight: 500 }}>Enter your organization credentials.</p>
+      {/* Right Side: Login Form */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', zIndex: 2 }}>
+        <div className="premium-glass" style={{ width: '100%', maxWidth: '460px', padding: '4rem', borderRadius: '40px', boxShadow: '0 40px 100px rgba(0,0,0,0.5)' }}>
+          <div style={{ marginBottom: '3.5rem', textAlign: 'center' }}>
+            <h1 style={{ fontSize: '2.75rem', fontWeight: 900, marginBottom: '0.75rem', letterSpacing: '-0.05em' }}>Sign In</h1>
+            <p className="text-muted" style={{ fontWeight: 500 }}>Access your Dailsmart Command Center.</p>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            <div>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.75rem' }}>
+            <div className="input-group">
               <label style={labelStyle}>
-                <Mail size={16} /> Business Email
+                <Mail size={16} /> Email Address
               </label>
               <input
                 type="email"
+                className="input-control"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="name@company.com"
+                placeholder="commander@dailsmart.ai"
                 required
-                style={inputStyle}
+                style={inputOver}
               />
             </div>
+
+            <div className="input-group">
+              <label style={labelStyle}>
+                <Building2 size={16} /> Identity Sector
+              </label>
+              <div style={{ position: 'relative' }}>
+                <select
+                  className="input-control"
+                  value={sector}
+                  onChange={(e) => setSector(e.target.value)}
+                  style={{ ...inputOver, appearance: 'none', background: 'var(--panel-bg)', cursor: 'pointer', fontWeight: 600 }}
+                >
+                  {industries.map(ind => (
+                    <option key={ind} value={ind} style={{ background: '#0f172a', color: 'white' }}>{ind}</option>
+                  ))}
+                </select>
+                <div style={{ position: 'absolute', right: '1.25rem', top: '50%', transform: 'translateY(-50%)', pointerEvents: 'none', color: 'var(--accent)', display: 'flex', alignItems: 'center' }}>
+                  <ChevronDown size={18} />
+                </div>
+              </div>
+            </div>
             
-            <div>
+            <div className="input-group">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                <Link to="/forgot-password" style={{ color: 'var(--accent)', fontSize: '0.8125rem', textDecoration: 'none', fontWeight: 700 }}>
-                  Forgot?
+                <label style={labelStyle}>
+                  <Lock size={16} /> Password
+                </label>
+                <Link to="/forgot-password" style={{ color: 'var(--accent)', fontSize: '0.85rem', fontWeight: 800, textDecoration: 'none' }}>
+                  Recovery Mode
                 </Link>
               </div>
               <input
                 type="password"
+                className="input-control"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
-                style={inputStyle}
+                style={inputOver}
               />
             </div>
 
             <Button 
               type="submit" 
+              className="btn-genz"
               loading={loading} 
-              fullWidth 
-              style={{ padding: '1.25rem', fontSize: '1rem', borderRadius: '16px', marginTop: '1rem', fontWeight: 800 }}
+              style={{ width: '100%', padding: '1.25rem', marginTop: '1.5rem', fontSize: '1.1rem', fontWeight: 900 }}
             >
-              Initialize Dashboard <ArrowRight size={18} style={{ marginLeft: '0.5rem' }} />
+              Verify & Enter <Zap size={20} />
             </Button>
           </form>
 
-          <div style={{ marginTop: '2.5rem', textAlign: 'center', fontSize: '0.9375rem', color: '#64748b', fontWeight: 500 }}>
-            Don't have an account yet?{' '}
-            <Link to="/signup" style={{ color: '#3b82f6', textDecoration: 'none', fontWeight: 800 }}>
-              Join the Network
+          <div style={{ marginTop: '3rem', textAlign: 'center', fontSize: '1rem', fontWeight: 600 }} className="text-muted">
+            New to the frontier?{' '}
+            <Link to="/signup" style={{ color: 'var(--accent)', fontWeight: 800, textDecoration: 'none' }}>
+              Create Account
             </Link>
           </div>
         </div>
       </div>
 
-      <style dangerouslySetInnerHTML={{ __html: `
+      <style>{`
+        @keyframes fadeInLeft {
+          from { opacity: 0; transform: translateX(-30px); }
+          to { opacity: 1; transform: translateX(0); }
+        }
+        .input-control:focus {
+          border-color: var(--accent);
+          box-shadow: 0 0 15px var(--accent-glow);
+        }
         @media (max-width: 1024px) {
           .hide-mobile { display: none !important; }
         }
-      `}} />
+        @media (max-width: 480px) {
+          .premium-glass {
+            padding: 2.5rem 1.5rem !important;
+            border-radius: 24px !important;
+          }
+          h1 { font-size: 2rem !important; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -175,23 +211,23 @@ export default function LoginPage() {
 const labelStyle = {
   display: 'flex',
   alignItems: 'center',
-  gap: '0.5rem',
+  gap: '0.6rem',
   marginBottom: '0.75rem',
-  fontSize: '0.875rem',
-  fontWeight: 600,
-  color: 'var(--text-muted)'
+  fontSize: '0.85rem',
+  fontWeight: 800,
+  color: 'var(--text-muted)',
+  textTransform: 'uppercase',
+  letterSpacing: '0.05em'
 };
 
-const inputStyle = {
-  width: '100%',
-  padding: '1.125rem 1.25rem',
-  background: 'var(--panel-bg)',
+const inputOver = {
+  background: 'rgba(255,255,255,0.03)',
   border: '1px solid var(--border)',
   borderRadius: '16px',
-  color: 'var(--text-main)',
+  padding: '1.125rem',
+  fontSize: '1rem',
+  color: 'white',
+  width: '100%',
   outline: 'none',
-  fontSize: '0.9375rem',
-  transition: 'all 0.3s ease',
-  boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.1)',
+  transition: '0.3s'
 };
-

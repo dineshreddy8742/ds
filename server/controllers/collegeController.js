@@ -24,12 +24,17 @@ export const getCollege = async (req, res, next) => {
 // Create college (admin only)
 export const createCollege = async (req, res, next) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, industry, credits, category, district, state } = req.body;
     
     const result = await collegeService.createCollege({
       name,
       email,
       password,
+      industry,
+      credits,
+      category,
+      district,
+      state
     });
 
     res.status(201).json({
