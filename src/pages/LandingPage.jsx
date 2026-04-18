@@ -310,15 +310,6 @@ export default function LandingPage() {
           </div>
       </section>
 
-      {/* Tech Chips */}
-      <div className="reveal-on-scroll" style={{ padding: '4rem 5%', display: 'flex', justifyContent: 'center', gap: '4rem', flexWrap: 'wrap', background: 'rgba(255,255,255,0.02)', borderY: '1px solid var(--border)' }}>
-        {['Advanced Neural Voice', 'Vocal Intent Analysis', 'Multi-Language Sync', 'Instant SSRL'].map(tech => (
-          <div key={tech} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-muted)', fontWeight: 800, fontSize: '0.9rem', letterSpacing: '0.05em' }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent)', boxShadow: 'var(--glow-pink)' }}></div>
-            {tech.toUpperCase()}
-          </div>
-        ))}
-      </div>
 
       {/* Hyper Growth & Unfair Advantages Section */}
       <section id="growth" style={{ padding: '120px 5%', position: 'relative' }}>
@@ -331,21 +322,24 @@ export default function LandingPage() {
               Dailsmart AI doesn't just verify contacts; it engineers growth. Our Intelligence Engine grows smarter with every interaction, identifying patterns that human teams miss.
             </p>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <AdvantageItem 
                 icon={<FastForward size={24} />} 
                 title="10x Speed-to-Lead" 
                 desc="Instantly engage leads while they are still thinking about you. No wait times." 
+                color="#3b82f6"
               />
               <AdvantageItem 
                 icon={<Award size={24} />} 
                 title="99.9% Call Integrity" 
                 desc="Perfect compliance, zero mistakes, and indistinguishable human-vibe interactions." 
+                color="#00ff88"
               />
               <AdvantageItem 
                 icon={<TrendingUp size={24} />} 
                 title="Hyper-Scaling Engine" 
                 desc="Go from 10 calls to 10,000 calls in a single click without hiring a single human." 
+                color="var(--accent)"
               />
             </div>
           </div>
@@ -371,7 +365,33 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Features Grid */}
+      {/* Scale Matrix Banner */}
+      <section style={{ padding: '80px 5%', background: 'rgba(59,130,246,0.02)', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <div className="reveal-on-scroll" style={{ maxWidth: '1400px', margin: '0 auto' }}>
+          <div className="mobile-stack" style={{ display: 'flex', justifyContent: 'space-between', gap: '3rem', textAlign: 'center', marginBottom: '3rem' }}>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: 'var(--accent)', marginBottom: '0.5rem' }}>10,000+ DAILY CALLS.</h3>
+              <p style={{ fontSize: '0.9rem', fontWeight: 700, opacity: 0.6 }}>INFINITE SCALE. ZERO LIMITS.</p>
+            </div>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#00ff88', marginBottom: '0.5rem' }}>AI QUALIFIES.</h3>
+              <p style={{ fontSize: '0.9rem', fontWeight: 700, opacity: 0.6 }}>YOU DOWNLOAD. PURE DATA.</p>
+            </div>
+            <div style={{ flex: 1 }}>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 900, color: '#ff4444', marginBottom: '0.5rem' }}>MARKET DOMINATION</h3>
+              <p style={{ fontSize: '0.9rem', fontWeight: 700, opacity: 0.6 }}>IS NOW AUTONOMOUS.</p>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', flexWrap: 'wrap' }}>
+            {['Advanced Neural Voice', 'Vocal Intent Analysis', 'Multi-Language Sync', 'Instant SSRL'].map(tech => (
+              <div key={tech} style={{ padding: '0.5rem 1rem', background: 'rgba(255,255,255,0.03)', borderRadius: '10px', fontSize: '0.8rem', fontWeight: 900, color: 'white', border: '1px solid rgba(255,255,255,0.05)' }}>
+                {tech.toUpperCase()}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       <section id="features" style={{ padding: '120px 5%' }}>
         <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <h2 className="hero-gradient-text" style={{ fontSize: 'clamp(2rem, 5vw, 4rem)', fontWeight: 900, marginBottom: '1.5rem' }}>Hands-Free Lead Intelligence</h2>
@@ -658,10 +678,10 @@ export default function LandingPage() {
         <div className="mobile-stack" style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <div className="reveal-on-scroll" style={{ textAlign: 'center', padding: '2.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px solid var(--border)', width: '320px', position: 'relative', overflow: 'hidden' }}>
             <div style={{ width: '200px', height: '200px', borderRadius: '100px', overflow: 'hidden', margin: '0 auto 2rem', border: '5px solid var(--accent)', boxShadow: '0 0 50px rgba(59, 130, 246, 0.5)' }}>
-              <img src="/yatish.png" alt="Dinesh - Founder" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', transform: 'scale(1.4)' }} />
+              <img src="/yatish.png" alt="Dinesh Reddy - Founder" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', transform: 'scale(1.4)' }} />
             </div>
             <h4 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Dinesh Reddy</h4>
-            <p style={{ color: 'var(--accent)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1.5rem' }}>FOUNDER & TECH LEAD</p>
+            <p style={{ color: 'var(--accent)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1.5rem' }}>FOUNDER</p>
             <a href="tel:7989604033" style={{ color: 'white', textDecoration: 'none', fontWeight: 900, fontSize: '1.4rem', display: 'block', marginBottom: '1rem' }}>+91 7989604033</a>
             <a href="https://www.linkedin.com/in/palavala-dinesh-kumar-reddy/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontWeight: 700 }}>
                 <Linkedin size={20} /> LinkedIn Profile
@@ -670,10 +690,10 @@ export default function LandingPage() {
 
           <div className="reveal-on-scroll" style={{ textAlign: 'center', padding: '2.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px solid var(--border)', width: '320px', position: 'relative', overflow: 'hidden' }}>
             <div style={{ width: '200px', height: '200px', borderRadius: '100px', overflow: 'hidden', margin: '0 auto 2rem', border: '5px solid var(--accent-secondary)', boxShadow: '0 0 50px rgba(168, 85, 247, 0.5)' }}>
-              <img src="/dinesh.png" alt="Yatish - Founder" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.2)' }} />
+              <img src="/dinesh.png" alt="Yatish Gottapu - Founder" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.2)' }} />
             </div>
             <h4 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Yatish Gottapu</h4>
-            <p style={{ color: 'var(--accent-secondary)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1.5rem' }}>FOUNDER & STRATEGY</p>
+            <p style={{ color: 'var(--accent-secondary)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1.5rem' }}>CO-FOUNDER & CEO</p>
             <a href="tel:7989479005" style={{ color: 'white', textDecoration: 'none', fontWeight: 900, fontSize: '1.4rem', display: 'block', marginBottom: '1rem' }}>+91 7989479005</a>
             <a href="https://www.linkedin.com/in/yatish-gottapu/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-secondary)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontWeight: 700 }}>
                 <Linkedin size={20} /> LinkedIn Profile
@@ -788,15 +808,44 @@ export default function LandingPage() {
   );
 }
 
-function AdvantageItem({ icon, title, desc }) {
+function AdvantageItem({ icon, title, desc, color = '#3b82f6' }) {
   return (
-    <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'flex-start' }}>
-      <div style={{ padding: '1rem', background: 'rgba(59, 130, 246, 0.1)', borderRadius: '16px', color: '#3b82f6' }}>
-        {icon}
+    <div className="reveal-on-scroll" style={{ 
+      display: 'flex', 
+      gap: '1.5rem', 
+      alignItems: 'flex-start',
+      padding: '1.5rem',
+      background: 'rgba(255,255,255,0.02)',
+      borderRadius: '24px',
+      border: '1px solid rgba(255,255,255,0.05)',
+      transition: '0.4s'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.background = 'rgba(255,255,255,0.04)';
+      e.currentTarget.style.borderColor = color;
+      e.currentTarget.style.transform = 'translateX(10px)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.background = 'rgba(255,255,255,0.02)';
+      e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
+      e.currentTarget.style.transform = 'translateX(0)';
+    }}>
+      <div style={{ 
+        padding: '1.2rem', 
+        background: `${color}15`, 
+        borderRadius: '20px', 
+        color: color,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxShadow: `0 10px 20px ${color}10`,
+        border: `1px solid ${color}30`
+      }}>
+        {React.cloneElement(icon, { size: 28 })}
       </div>
       <div>
-        <h4 style={{ fontSize: '1.3rem', fontWeight: 900, marginBottom: '0.5rem' }}>{title}</h4>
-        <p style={{ color: 'var(--text-muted)', fontWeight: 500, lineHeight: 1.5 }}>{desc}</p>
+        <h4 style={{ fontSize: '1.4rem', fontWeight: 900, marginBottom: '0.5rem', color: 'white', letterSpacing: '-0.01em' }}>{title}</h4>
+        <p style={{ color: 'var(--text-muted)', fontWeight: 600, fontSize: '0.95rem', lineHeight: 1.5 }}>{desc}</p>
       </div>
     </div>
   );
