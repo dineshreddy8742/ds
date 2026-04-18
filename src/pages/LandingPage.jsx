@@ -111,7 +111,7 @@ export default function LandingPage() {
             position: 'relative',
             overflow: 'hidden'
           }}>
-            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(45deg, transparent, rgba(255,255,255,0.4), transparent)', transform: 'translateY(-100%)', animation: 'logo-shine 3s infinite' }}></div>
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(45deg, transparent, rgba(255,255,255,0.4), transparent)', transform: 'translateY(-100%)', animation: 'logo-shine 5s infinite ease-in-out' }}></div>
             <Bot size={24} color="white" />
           </div>
           <span style={{ 
@@ -222,7 +222,7 @@ export default function LandingPage() {
         </div>
 
         <h1 className="hero-gradient-text" style={{ 
-          fontSize: 'clamp(3rem, 10vw, 7.5rem)', 
+          fontSize: 'clamp(2.2rem, 10vw, 7.5rem)', 
           fontWeight: 900, 
           lineHeight: 0.95, 
           letterSpacing: '-0.06em', 
@@ -244,13 +244,12 @@ export default function LandingPage() {
         }}>
           Dailsmart AI handles the autonomous voice orchestration in **Telugu, Hindi, English, Tamil, Kannada, and Bengali**. 
           We orchestrate **1,000 to 10,000+ calls daily** so you can scale and promote your business without limits. Zero setup. Instant downloads.
-        </p>
-
-        <div className="reveal-on-scroll" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
-            Get Data Access Now <ChevronRight size={20} />
-          <Button variant="secondary" style={{ padding: '1.25rem 2.5rem', fontSize: '1.1rem', background: 'rgba(255,255,255,0.05)' }}>
-            Watch Demo <Play size={20} fill="currentColor" />
-          </Button>
+        </p>        <div className="reveal-on-scroll mobile-stack" style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center', width: '100%', maxWidth: '500px' }}>
+          <Button onClick={() => navigate('/login')} className="btn-genz" style={{ padding: '1.25rem 3rem', fontSize: '1.1rem', borderRadius: '16px' }}>Access Data Hub</Button>
+          <Button onClick={() => {
+            const el = document.getElementById('pricing');
+            el?.scrollIntoView({ behavior: 'smooth' });
+          }} variant="secondary" style={{ padding: '1.25rem 3rem', fontSize: '1.1rem', borderRadius: '16px' }}>View High-ROI Pricing</Button>
         </div>
 
         {/* Floating elements */}
@@ -422,7 +421,7 @@ export default function LandingPage() {
       {/* Industry Verticals - What we focus mainly */}
       <section id="verticals" style={{ padding: '120px 5%', background: 'rgba(255,255,255,0.01)' }}>
         <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-          <h2 className="hero-gradient-text" style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 900, marginBottom: '1.5rem', letterSpacing: '-0.04em' }}>
+          <h2 className="hero-gradient-text" style={{ fontSize: 'clamp(1.8rem, 6vw, 4.5rem)', fontWeight: 900, marginBottom: '1.5rem', letterSpacing: '-0.04em' }}>
             Domain-Specific Intelligence
           </h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.25rem', maxWidth: '800px', margin: '0 auto', fontWeight: 500 }}>
@@ -657,7 +656,7 @@ export default function LandingPage() {
         <p style={{ color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto 4rem', fontSize: '1.2rem', fontWeight: 500 }}>
           Direct technical access. No corporate gatekeeping.
         </p>
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', flexWrap: 'wrap' }}>
+        <div className="mobile-stack" style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <div className="reveal-on-scroll" style={{ textAlign: 'center', padding: '2.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px solid var(--border)', width: '320px', position: 'relative', overflow: 'hidden' }}>
             <div style={{ width: '200px', height: '200px', borderRadius: '100px', overflow: 'hidden', margin: '0 auto 2rem', border: '5px solid var(--accent)', boxShadow: '0 0 50px rgba(59, 130, 246, 0.5)' }}>
               <img src="/yatish.png" alt="Dinesh - Founder" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', transform: 'scale(1.4)' }} />
@@ -751,9 +750,13 @@ export default function LandingPage() {
         .grid-4 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 3rem; }
         @media (max-width: 768px) {
           .nav-link-premium { display: none; }
-          .hero-gradient-text { font-size: clamp(2.5rem, 12vw, 4rem) !important; }
-          .grid-3, .grid-4 { grid-template-columns: 1fr !important; }
-          section { padding: 80px 5% !important; }
+          .hero-gradient-text { font-size: clamp(2rem, 10vw, 4rem) !important; text-align: center; }
+          .grid-3, .grid-4 { grid-template-columns: 1fr !important; gap: 1.5rem !important; }
+          section { padding: 60px 20px !important; }
+          .hide-mobile { display: none !important; }
+          .mobile-stack { flex-direction: column !important; align-items: stretch !important; gap: 1rem !important; }
+          .logo span { font-size: 1.2rem !important; }
+          .logo div { width: 32px !important; height: 32px !important; }
         }
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(10px); }
@@ -763,7 +766,7 @@ export default function LandingPage() {
           0%, 100% { transform: translateY(0); }
           50% { transform: translateY(-30px); }
         }
-        .floating-animation { animation: float 6s ease-in-out infinite; }
+        .floating-animation { animation: float 15s ease-in-out infinite; }
         .faq-item:hover { border-color: var(--accent) !important; background: rgba(255,255,255,0.03) !important; }
         .mobile-overlay { position: fixed; inset: 0; background: rgba(2,6,23,0.98); backdrop-filter: blur(20px); z-index: 5000; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
         .mobile-overlay.active { opacity: 1; pointer-events: auto; }
@@ -800,61 +803,69 @@ function AdvantageItem({ icon, title, desc }) {
 }
 
 function VerticalCard({ icon, title, points, color }) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
   return (
     <div className="premium-glass reveal-on-scroll" style={{ 
-      padding: '2rem 1.75rem', 
-      borderRadius: '28px', 
-      border: `1px solid ${color}15`,
+      padding: '1.5rem', 
+      borderRadius: '24px', 
+      border: `1px solid ${isExpanded ? color : color + '15'}`,
       position: 'relative',
       overflow: 'hidden',
       transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-      cursor: 'default',
-      background: 'rgba(255,255,255,0.01)'
+      cursor: 'pointer',
+      background: isExpanded ? 'rgba(255,255,255,0.03)' : 'rgba(255,255,255,0.01)',
+      maxHeight: isExpanded ? '800px' : '100px',
+      display: 'flex',
+      flexDirection: 'column'
     }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.transform = 'translateY(-8px)';
-      e.currentTarget.style.borderColor = color;
-      e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.borderColor = `${color}15`;
-      e.currentTarget.style.background = 'rgba(255,255,255,0.01)';
-    }}>
+    onClick={() => setIsExpanded(!isExpanded)}>
       <div style={{ position: 'absolute', top: '-10%', right: '-10%', width: '100px', height: '100px', background: color, filter: 'blur(60px)', opacity: 0.1, pointerEvents: 'none' }}></div>
       
-      <div style={{ 
-        width: '50px', 
-        height: '50px', 
-        background: `${color}10`, 
-        borderRadius: '16px', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center', 
-        color: color, 
-        marginBottom: '1.5rem',
-        border: `1px solid ${color}20`
-      }}>
-        {React.cloneElement(icon, { size: 24 })}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', width: '100%' }}>
+        <div style={{ 
+          width: '40px', 
+          height: '40px', 
+          background: `${color}10`, 
+          borderRadius: '12px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          color: color, 
+          flexShrink: 0,
+          border: `1px solid ${color}20`
+        }}>
+          {React.cloneElement(icon, { size: 20 })}
+        </div>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 900, letterSpacing: '-0.02em', color: 'white', flex: 1 }}>{title}</h3>
+        <div style={{ transform: isExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: '0.3s', color: 'var(--text-muted)' }}>
+          <Plus size={20} />
+        </div>
       </div>
 
-      <h3 style={{ fontSize: '1.3rem', fontWeight: 900, marginBottom: '1.25rem', letterSpacing: '-0.02em', color: 'white' }}>{title}</h3>
-      
-      <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-        {points.map((p, i) => (
-          <li key={i} style={{ 
-            color: 'var(--text-muted)', 
-            fontWeight: 600, 
-            fontSize: '0.9rem', 
-            display: 'flex', 
-            gap: '0.75rem',
-            lineHeight: 1.3
-          }}>
-            <CheckCircle size={14} color={color} style={{ flexShrink: 0, marginTop: '0.2rem' }} />
-            {p}
-          </li>
-        ))}
-      </ul>
+      <div style={{ 
+        opacity: isExpanded ? 1 : 0,
+        height: isExpanded ? 'auto' : 0,
+        overflow: 'hidden',
+        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+        marginTop: isExpanded ? '1.5rem' : 0
+      }}>
+        <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.75rem', borderTop: `1px solid ${color}20`, paddingTop: '1.5rem' }}>
+          {points.map((p, i) => (
+            <li key={i} style={{ 
+              color: 'var(--text-muted)', 
+              fontWeight: 600, 
+              fontSize: '0.9rem', 
+              display: 'flex', 
+              gap: '0.75rem',
+              lineHeight: 1.3
+            }}>
+              <CheckCircle size={14} color={color} style={{ flexShrink: 0, marginTop: '0.2rem' }} />
+              {p}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
