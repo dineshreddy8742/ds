@@ -668,14 +668,14 @@ export default function LandingPage() {
 
       {/* Founders / Contact Section */}
       <section style={{ padding: '120px 5%', background: 'rgba(2, 6, 23, 0.4)', textAlign: 'center' }}>
-        <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 900, marginBottom: '1.5rem' }}>Talk to the Founders 🛠️</h2>
+        <h2 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', fontWeight: 900, marginBottom: '1.5rem' }}>Meet the Leadership Team 🛠️</h2>
         <p style={{ color: 'var(--text-muted)', maxWidth: '700px', margin: '0 auto 4rem', fontSize: '1.2rem', fontWeight: 500 }}>
-          Direct technical access. No corporate gatekeeping.
+          Direct access to the minds driving DialSmart AI forward.
         </p>
         <div className="mobile-stack" style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <div className="reveal-on-scroll" style={{ textAlign: 'center', padding: '2.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px solid var(--border)', width: '320px', position: 'relative', overflow: 'hidden' }}>
             <div style={{ width: '200px', height: '200px', borderRadius: '100px', overflow: 'hidden', margin: '0 auto 2rem', border: '5px solid var(--accent)', boxShadow: '0 0 50px rgba(59, 130, 246, 0.5)' }}>
-              <img src="/yatish.png" alt="Dinesh Reddy - Founder" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', transform: 'scale(1.4)' }} />
+              <img src="/dinesh.png" alt="Dinesh Reddy - Founder" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 30%', transform: 'scale(1.4)' }} />
             </div>
             <h4 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Dinesh Reddy</h4>
             <p style={{ color: 'var(--accent)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1.5rem' }}>FOUNDER</p>
@@ -687,7 +687,7 @@ export default function LandingPage() {
 
           <div className="reveal-on-scroll" style={{ textAlign: 'center', padding: '2.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px solid var(--border)', width: '320px', position: 'relative', overflow: 'hidden' }}>
             <div style={{ width: '200px', height: '200px', borderRadius: '100px', overflow: 'hidden', margin: '0 auto 2rem', border: '5px solid var(--accent-secondary)', boxShadow: '0 0 50px rgba(168, 85, 247, 0.5)' }}>
-              <img src="/dinesh.png" alt="Yatish Gottapu - Founder" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.2)' }} />
+              <img src="/yatish.png" alt="Yatish Gottapu - Founder" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.2)' }} />
             </div>
             <h4 style={{ fontSize: '1.75rem', fontWeight: 900, marginBottom: '0.5rem' }}>Yatish Gottapu</h4>
             <p style={{ color: 'var(--accent-secondary)', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1.5rem' }}>CO-FOUNDER & CEO</p>
@@ -695,6 +695,26 @@ export default function LandingPage() {
             <a href="https://www.linkedin.com/in/yatish-gottapu/" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--accent-secondary)', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', fontWeight: 700 }}>
                 <Linkedin size={20} /> LinkedIn Profile
             </a>
+          </div>
+
+          <div className="reveal-on-scroll" style={{ textAlign: 'center', padding: '2.5rem', background: 'rgba(255,255,255,0.02)', borderRadius: '32px', border: '1px solid var(--border)', width: '320px', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ width: '200px', height: '200px', borderRadius: '100px', overflow: 'hidden', margin: '0 auto 2rem', border: '5px solid #00ff88', boxShadow: '0 0 50px rgba(0, 255, 136, 0.5)' }}>
+              <img src="/naresh.png" alt="Naresh - Executive Manager" style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 20%', transform: 'scale(1.1)' }} />
+            </div>
+            <h4 style={{ 
+              fontSize: '1.75rem', 
+              fontWeight: 900, 
+              marginBottom: '0.5rem',
+              background: 'linear-gradient(to right, #fff, #00ff88)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              filter: 'drop-shadow(0 0 10px rgba(0, 255, 136, 0.3))'
+            }}>Naresh</h4>
+            <p style={{ color: '#00ff88', fontWeight: 800, fontSize: '0.9rem', marginBottom: '1rem' }}>EXECUTIVE MANAGER</p>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '1.5rem', lineHeight: 1.4 }}>
+              Driving Client Acquisition & <br/> Strategic Growth Architecture
+            </p>
+            <a href="tel:9505608509" style={{ color: 'white', textDecoration: 'none', fontWeight: 900, fontSize: '1.4rem', display: 'block', marginBottom: '1rem' }}>+91 9505608509</a>
           </div>
         </div>
       </section>
