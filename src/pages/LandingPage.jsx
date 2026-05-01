@@ -252,6 +252,25 @@ export default function LandingPage() {
           }} variant="secondary" style={{ padding: '1.25rem 3rem', fontSize: '1.1rem', borderRadius: '16px' }}>View High-ROI Pricing</Button>
         </div>
 
+        {/* Government Trust Highlight */}
+        <div className="reveal-on-scroll" style={{ 
+          marginTop: '3.5rem', 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: '1rem', 
+          padding: '0.75rem 1.5rem', 
+          background: 'linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(0, 255, 136, 0.05) 50%, rgba(255,255,255,0.02) 100%)', 
+          borderRadius: '100px', 
+          border: '1px solid rgba(0, 255, 136, 0.15)',
+          boxShadow: '0 10px 30px rgba(0, 255, 136, 0.05)',
+          zIndex: 10
+        }}>
+          <Shield size={20} color="#00ff88" style={{ filter: 'drop-shadow(0 0 5px rgba(0, 255, 136, 0.5))' }} />
+          <span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600, letterSpacing: '0.02em', textAlign: 'left' }}>
+            Trusted by the <strong style={{ color: '#00ff88', fontWeight: 800 }}>District Collector & Magistrate of Chittoor</strong> for Government Operations
+          </span>
+        </div>
+
         {/* Floating elements */}
         <div className="reveal-on-scroll floating-card hide-mobile" style={{ 
           position: 'absolute', 
